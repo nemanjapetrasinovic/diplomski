@@ -1,0 +1,57 @@
+﻿@model IEnumerable<diplomski.Models.Laptop>
+
+@{
+    ViewBag.Title = "AllLaptops";
+}
+
+<h2>AllLaptops</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.OS)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.LanMacAddress)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.WifiMacAddress)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.WiFiNetworkName)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.OS)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.LanMacAddress)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.WifiMacAddress)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.WiFiNetworkName)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { name = item.name, LanMacAddress = item.LanMacAddress, WiFiMacAddress=item.WifiMacAddress }) |
+            @Html.ActionLink("Details", "Details", new { name = item.name, LanMacAddress = item.LanMacAddress, WiFiMacAddress = item.WifiMacAddress }) |
+            @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+        </td>
+    </tr>
+}
+
+</table>
