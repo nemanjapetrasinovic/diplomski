@@ -237,5 +237,87 @@ namespace diplomski
                 .Set("Type", Type).Set("Description", Description).Run();
         }
         #endregion
+
+        #region Router
+        public static List<Router> GetAllRouters()
+        {
+            ODatabase database = InitDB();
+            List<ODocument> resultset = database.Select().From("Router").ToList();
+            JavaScriptSerializer converter = new JavaScriptSerializer();
+
+            List<Router> AllRouters = new List<Router>();
+
+            foreach (ODocument doc in resultset)
+            {
+                var json = converter.Serialize(doc);
+                String a = json.ToString();
+                Router d = converter.Deserialize<Router>(a);
+                AllRouters.Add(d);
+            }
+
+            database.Close();
+            return AllRouters;
+        }
+
+        public static void AddRouter(String name, String OS, String SerialNumber, String Manufacturer,
+            String WiFiNetworkName, int NumberOfPorts, int NumberOfTakenPorts)
+        {
+            List<String> MacAddressList = new List<string>();
+            List<int> PortIdList = new List<int>();
+            ODatabase database = InitDB();
+            database.Insert().Into("Router").Set("name", name)
+                .Set("OS", OS).Set("SerialNumber", SerialNumber)
+                .Set("Manufacturer", Manufacturer).Set("WiFiNetworkName", WiFiNetworkName)
+                .Set("NumberOfPorts", NumberOfPorts).Set("NumberOfTakenPorts", NumberOfTakenPorts)
+                .Set("MacAddressList", MacAddressList).Set("PortIdList", PortIdList).Run();
+            database.Close();
+        }
+
+        public static Router RouterByName(String name, String SerialNumber)
+        {
+            ODatabase database = InitDB();
+            string query = String.Format("SELECT * FROM Router WHERE name=\"" + name + "\" AND SerialNumber=\""
+                + SerialNumber + "\"");
+            List<ODocument> resultset = database.Query(query).ToList();
+
+            JavaScriptSerializer converter = new JavaScriptSerializer();
+
+            List<Router> AllRouters = new List<Router>();
+
+            foreach (ODocument doc in resultset)
+            {
+                var json = converter.Serialize(doc);
+                String a = json.ToString();
+                Router d = converter.Deserialize<Router>(a);
+                AllRouters.Add(d);
+            }
+
+            Router router = null;
+            if (AllRouters != null)
+                router = AllRouters[0];
+            database.Close();
+
+            return router;
+        }
+
+        public static void UpdateRouter(String name, String OS, String SerialNumber, String Manufacturer,
+            int NumberOfPorts, int NumberOfTakenPorts, String WiFiNetworkName,
+            List<String> MacAddressList, String RouterNameOld, String SerialNumberOld)
+        {
+            ODatabase database = InitDB();
+
+            string query = String.Format("SELECT * FROM Router WHERE name=\"" + RouterNameOld + "\" AND SerialNumber=\""
+                 + SerialNumberOld + "\"");
+            List<ODocument> result = database.Query(query).ToList();
+
+            ODocument o = result[0];
+            ORID z = o.GetField<ORID>("@ORID");
+
+            database.Update(z).Set("name", name).Set("OS", OS).Set("SerialNumber", SerialNumber)
+                .Set("Manufacturer", Manufacturer).Set("NumberOfPorts", NumberOfPorts)
+                .Set("NumberOfTakenPorts", NumberOfTakenPorts).Set("WiFiNetworkName", WiFiNetworkName)
+                .Set("MacAddressList", MacAddressList).Run();
+        }
+        #endregion
     }
 }

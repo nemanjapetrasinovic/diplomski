@@ -200,6 +200,7 @@
     <Compile Include="Controllers\DesktopController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LaptopController.cs" />
+    <Compile Include="Controllers\RouterController.cs" />
     <Compile Include="Controllers\ServerController.cs" />
     <Compile Include="DataProvider.cs" />
     <Compile Include="Global.asax.cs">
@@ -208,7 +209,10 @@
     <Compile Include="Models\Computer.cs" />
     <Compile Include="Models\Desktop.cs" />
     <Compile Include="Models\Laptop.cs" />
+    <Compile Include="Models\Node.cs" />
+    <Compile Include="Models\Router.cs" />
     <Compile Include="Models\Server.cs" />
+    <Compile Include="Models\Switch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -270,6 +274,9 @@
     <Content Include="Views\Server\AddServer.cshtml" />
     <Content Include="Views\Server\Edit.cshtml" />
     <Content Include="Views\Server\Details.cshtml" />
+    <Content Include="Views\Router\AllRouters.cshtml" />
+    <Content Include="Views\Router\AddRouter.cshtml" />
+    <Content Include="Views\Router\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
