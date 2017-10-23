@@ -263,13 +263,12 @@ namespace diplomski
             String WiFiNetworkName, int NumberOfPorts, int NumberOfTakenPorts)
         {
             List<String> MacAddressList = new List<string>();
-            List<int> PortIdList = new List<int>();
             ODatabase database = InitDB();
             database.Insert().Into("Router").Set("name", name)
                 .Set("OS", OS).Set("SerialNumber", SerialNumber)
                 .Set("Manufacturer", Manufacturer).Set("WiFiNetworkName", WiFiNetworkName)
                 .Set("NumberOfPorts", NumberOfPorts).Set("NumberOfTakenPorts", NumberOfTakenPorts)
-                .Set("MacAddressList", MacAddressList).Set("PortIdList", PortIdList).Run();
+                .Set("MacAddressList", MacAddressList).Run();
             database.Close();
         }
 
@@ -316,6 +315,89 @@ namespace diplomski
             database.Update(z).Set("name", name).Set("OS", OS).Set("SerialNumber", SerialNumber)
                 .Set("Manufacturer", Manufacturer).Set("NumberOfPorts", NumberOfPorts)
                 .Set("NumberOfTakenPorts", NumberOfTakenPorts).Set("WiFiNetworkName", WiFiNetworkName)
+                .Set("MacAddressList", MacAddressList).Run();
+        }
+        #endregion
+
+        #region Switch
+        public static List<Switch> GetAllSwitches()
+        {
+            ODatabase database = InitDB();
+            List<ODocument> resultset = database.Select().From("Switch").ToList();
+            JavaScriptSerializer converter = new JavaScriptSerializer();
+
+            List<Switch> AllSwitches = new List<Switch>();
+
+            foreach (ODocument doc in resultset)
+            {
+                var json = converter.Serialize(doc);
+                String a = json.ToString();
+                Switch d = converter.Deserialize<Switch>(a);
+                AllSwitches.Add(d);
+            }
+
+            database.Close();
+            return AllSwitches;
+        }
+
+        public static void AddSwitch(String name, String SerialNumber, String Manufacturer,
+             int NumberOfPorts, int NumberOfTakenPorts)
+        {
+            List<String> MacAddressList = new List<string>();
+            ODatabase database = InitDB();
+            database.Insert().Into("Switch").Set("name", name)
+                .Set("SerialNumber", SerialNumber)
+                .Set("Manufacturer", Manufacturer)
+                .Set("NumberOfPorts", NumberOfPorts).Set("NumberOfTakenPorts", NumberOfTakenPorts)
+                .Set("MacAddressList", MacAddressList).Run();
+            database.Close();
+        }
+
+        public static Switch SwitchByName(String name, String SerialNumber)
+        {
+            ODatabase database = InitDB();
+            string query = String.Format("SELECT * FROM Switch WHERE name=\"" + name + "\" AND SerialNumber=\""
+                + SerialNumber + "\"");
+            List<ODocument> resultset = database.Query(query).ToList();
+
+            JavaScriptSerializer converter = new JavaScriptSerializer();
+
+            List<Switch> AllSwitches = new List<Switch>();
+
+            foreach (ODocument doc in resultset)
+            {
+                var json = converter.Serialize(doc);
+                String a = json.ToString();
+                Switch d = converter.Deserialize<Switch>(a);
+                AllSwitches.Add(d);
+            }
+
+            Switch router = null;
+            if (AllSwitches != null)
+                router = AllSwitches[0];
+            database.Close();
+
+            return router;
+        }
+
+        public static void UpdateSwitch(String name, String SerialNumber, String Manufacturer,
+            int NumberOfPorts, int NumberOfTakenPorts,
+            List<String> MacAddressList, String SwitchNameOld, String SerialNumberOld)
+        {
+            ODatabase database = InitDB();
+
+            string query = String.Format("SELECT * FROM Switch WHERE name=\"" + SwitchNameOld + "\" AND SerialNumber=\""
+                 + SerialNumberOld + "\"");
+            List<ODocument> result = database.Query(query).ToList();
+
+            ODocument o = result[0];
+            ORID z = o.GetField<ORID>("@ORID");
+
+            database.Update(z).Set("name", name)
+                .Set("SerialNumber", SerialNumber)
+                .Set("Manufacturer", Manufacturer)
+                .Set("NumberOfPorts", NumberOfPorts)
+                .Set("NumberOfTakenPorts", NumberOfTakenPorts)
                 .Set("MacAddressList", MacAddressList).Run();
         }
         #endregion

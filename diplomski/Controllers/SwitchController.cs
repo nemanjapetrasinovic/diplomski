@@ -7,42 +7,40 @@ using diplomski.Models;
 
 namespace diplomski.Controllers
 {
-    public class RouterController : Controller
+    public class SwitchController : Controller
     {
-        // GET: Router
-        public ActionResult AllRouters()
+        // GET: Switch
+        public ActionResult AllSwitches()
         {
-            List<Router> AllRouters = DataProvider.GetAllRouters();
-            return View(AllRouters);
+            List<Switch> AllSwitches = DataProvider.GetAllSwitches();
+            return View(AllSwitches);
         }
 
-        public ActionResult AddRouter()
+        public ActionResult AddSwitch()
         {
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult AddRouter(FormCollection form)
+        public ActionResult AddSwitch(FormCollection form)
         {
             String name = form["name"].ToString();
-            String OS = form["OS"].ToString();
             String Manufacturer = form["Manufacturer"].ToString();
             String SNumberOfPorts = form["NumberOfPorts"].ToString();
             int NumberOfPorts = Convert.ToInt32(SNumberOfPorts);
             String SNumberOfTakenPorts = form["NumberOfTakenPorts"].ToString();
-            int NumberOfTakenPorts= Convert.ToInt32(SNumberOfTakenPorts);
-            String WiFiNetworkName = form["WiFiNetworkName"].ToString();
+            int NumberOfTakenPorts = Convert.ToInt32(SNumberOfTakenPorts);
             String SerialNumber = form["SerialNumber"].ToString();
 
-            DataProvider.AddRouter(name, OS, SerialNumber, Manufacturer, WiFiNetworkName, NumberOfPorts, NumberOfTakenPorts);
+            DataProvider.AddSwitch(name, SerialNumber, Manufacturer, NumberOfPorts, NumberOfTakenPorts);
             return View();
         }
 
         public ActionResult Edit(String name, String SerialNumber)
         {
-            Router router = DataProvider.RouterByName(name, SerialNumber);
-            return View(router);
+            Switch s = DataProvider.SwitchByName(name, SerialNumber);
+            return View(s);
         }
 
         [HttpPost]
@@ -50,17 +48,15 @@ namespace diplomski.Controllers
         public ActionResult Edit(FormCollection form)
         {
             String name = form["name"].ToString();
-            String OS = form["OS"].ToString();
             String Manufacturer = form["Manufacturer"].ToString();
             String SNumberOfPorts = form["NumberOfPorts"].ToString();
             int NumberOfPorts = Convert.ToInt32(SNumberOfPorts);
             String SNumberOfTakenPorts = form["NumberOfTakenPorts"].ToString();
             int NumberOfTakenPorts = Convert.ToInt32(SNumberOfTakenPorts);
-            String WiFiNetworkName = form["WiFiNetworkName"].ToString();
             String SerialNumber = form["SerialNumber"].ToString();
             List<String> MacAddressList = new List<string>();
 
-            String nameOld = form["RouterNameOld"].ToString();
+            String nameOld = form["SwitchNameOld"].ToString();
             String SerialNumberOld = form["SerialNumberOld"].ToString();
 
             String s = form["MacAddresses"].ToString();
@@ -68,15 +64,15 @@ namespace diplomski.Controllers
             foreach (String t in tokens)
                 MacAddressList.Add(t);
 
-            DataProvider.UpdateRouter(name, OS, SerialNumber, Manufacturer, NumberOfPorts, NumberOfTakenPorts,
-                WiFiNetworkName, MacAddressList, nameOld, SerialNumberOld);
+            DataProvider.UpdateSwitch(name, SerialNumber, Manufacturer, NumberOfPorts, NumberOfTakenPorts,
+                MacAddressList, nameOld, SerialNumberOld);
             return View();
         }
 
         public ActionResult Details(String name, String SerialNumber)
         {
-            Router router = DataProvider.RouterByName(name,SerialNumber);
-            return View(router);
+            Switch s = DataProvider.SwitchByName(name, SerialNumber);
+            return View(s);
         }
     }
 }

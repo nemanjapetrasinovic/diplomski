@@ -12,7 +12,6 @@ namespace diplomski.Models
         public String Manufacturer { get; set; }
         public int NumberOfPorts { get; set; }
         public int NumberOfTakenPorts { get; set; }
-        public List<int> PortIdList { get; set; }
         public List<String> MacAddressList { get; set; }
     }
 }

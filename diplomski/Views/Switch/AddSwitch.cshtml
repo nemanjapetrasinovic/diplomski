@@ -1,17 +1,17 @@
-﻿@model diplomski.Models.Router
+﻿@model diplomski.Models.Switch
 
 @{
-    ViewBag.Title = "Edit";
+    ViewBag.Title = "AddSwitch";
 }
 
-<h2>Edit</h2>
+<h2>AddSwitch</h2>
 
-@using (Html.BeginForm())
+@using (Html.BeginForm()) 
 {
     @Html.AntiForgeryToken()
     
     <div class="form-horizontal">
-        <h4>Router</h4>
+        <h4>Switch</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         <div class="form-group">
@@ -55,51 +55,8 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.OS, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.OS, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.OS, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.WiFiNetworkName, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.WiFiNetworkName, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.WiFiNetworkName, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        @{
-            List<String> MacAddressList = Model.MacAddressList.ToList();
-
-            for (int i = 0; i < Model.NumberOfPorts; i++)
-            {
-                String s = "";
-                if (MacAddressList.Count() != 0)
-                {
-                    if (MacAddressList.ElementAtOrDefault(i) != null)
-                    {
-                        s = MacAddressList.ElementAt(i);
-                    }
-                }
-
-                <div class="form-group">
-                    @Html.Label("MacAddress_" + i.ToString(), htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-10">
-                        @Html.Editor("MacAddresses", new { htmlAttributes = new { @class = "form-control",@Value= s } })
-                        @Html.ValidationMessage("MacAddresses", "", new { @class = "text-danger" })
-                    </div>
-                </div>
-            }
-        }
-
-        @Html.Hidden("RouterNameOld", Model.name)
-        @Html.Hidden("SerialNumberOld", Model.SerialNumber)
-
-        <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
+                <input type="submit" value="Create" class="btn btn-default" />
             </div>
         </div>
     </div>
