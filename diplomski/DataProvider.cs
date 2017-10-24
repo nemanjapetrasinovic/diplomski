@@ -76,6 +76,32 @@ namespace diplomski
             return desktop;
         }
 
+        public static Desktop DesktopByNameOnly(String name)
+        {
+            ODatabase database = InitDB();
+            string query = String.Format("SELECT * FROM Desktop WHERE name=\"" + name+"\"");
+            List<ODocument> resultset = database.Query(query).ToList();
+
+            JavaScriptSerializer converter = new JavaScriptSerializer();
+
+            List<Desktop> AllDesktops = new List<Desktop>();
+
+            foreach (ODocument doc in resultset)
+            {
+                var json = converter.Serialize(doc);
+                String a = json.ToString();
+                Desktop d = converter.Deserialize<Desktop>(a);
+                AllDesktops.Add(d);
+            }
+
+            Desktop desktop = null;
+            if (AllDesktops != null)
+                desktop = AllDesktops[0];
+            database.Close();
+
+            return desktop;
+        }
+
         public static void UpdateDesktop(String name, String OS, String LanMacAddress,String nameOld,String LanMacAddressOld)
         {
             ODatabase database = InitDB();
@@ -127,6 +153,32 @@ namespace diplomski
             ODatabase database = InitDB();
             string query = String.Format("SELECT * FROM Laptop WHERE name=\"" + name + "\" AND LanMacAddress=\""
                 + LanMacAddress + "\" AND WiFiMacAddress=\""+WiFiMacAddress+"\"");
+            List<ODocument> resultset = database.Query(query).ToList();
+
+            JavaScriptSerializer converter = new JavaScriptSerializer();
+
+            List<Laptop> AllLaptops = new List<Laptop>();
+
+            foreach (ODocument doc in resultset)
+            {
+                var json = converter.Serialize(doc);
+                String a = json.ToString();
+                Laptop d = converter.Deserialize<Laptop>(a);
+                AllLaptops.Add(d);
+            }
+
+            Laptop laptop = null;
+            if (AllLaptops != null)
+                laptop = AllLaptops[0];
+            database.Close();
+
+            return laptop;
+        }
+
+        public static Laptop LaptopByNameOnly(String name)
+        {
+            ODatabase database = InitDB();
+            string query = String.Format("SELECT * FROM Laptop WHERE name=\"" + name + "\"");
             List<ODocument> resultset = database.Query(query).ToList();
 
             JavaScriptSerializer converter = new JavaScriptSerializer();
@@ -222,6 +274,32 @@ namespace diplomski
             return server;
         }
 
+        public static Server ServerByNameOnly(String name)
+        {
+            ODatabase database = InitDB();
+            string query = String.Format("SELECT * FROM Server WHERE name=\"" + name + "\"");
+            List<ODocument> resultset = database.Query(query).ToList();
+
+            JavaScriptSerializer converter = new JavaScriptSerializer();
+
+            List<Server> AllServerss = new List<Server>();
+
+            foreach (ODocument doc in resultset)
+            {
+                var json = converter.Serialize(doc);
+                String a = json.ToString();
+                Server d = converter.Deserialize<Server>(a);
+                AllServerss.Add(d);
+            }
+
+            Server server = null;
+            if (AllServerss != null)
+                server = AllServerss[0];
+            database.Close();
+
+            return server;
+        }
+
         public static void UpdateServer(String name, String OS, String LanMacAddress, String Type, String Description, String nameOld, String LanMacAddressOld)
         {
             ODatabase database = InitDB();
@@ -277,6 +355,32 @@ namespace diplomski
             ODatabase database = InitDB();
             string query = String.Format("SELECT * FROM Router WHERE name=\"" + name + "\" AND SerialNumber=\""
                 + SerialNumber + "\"");
+            List<ODocument> resultset = database.Query(query).ToList();
+
+            JavaScriptSerializer converter = new JavaScriptSerializer();
+
+            List<Router> AllRouters = new List<Router>();
+
+            foreach (ODocument doc in resultset)
+            {
+                var json = converter.Serialize(doc);
+                String a = json.ToString();
+                Router d = converter.Deserialize<Router>(a);
+                AllRouters.Add(d);
+            }
+
+            Router router = null;
+            if (AllRouters != null)
+                router = AllRouters[0];
+            database.Close();
+
+            return router;
+        }
+
+        public static Router RouterByNameOnly(String name)
+        {
+            ODatabase database = InitDB();
+            string query = String.Format("SELECT * FROM Router WHERE name=\"" + name + "\"");
             List<ODocument> resultset = database.Query(query).ToList();
 
             JavaScriptSerializer converter = new JavaScriptSerializer();
@@ -380,6 +484,32 @@ namespace diplomski
             return router;
         }
 
+        public static Switch SwitchByNameOnly(String name)
+        {
+            ODatabase database = InitDB();
+            string query = String.Format("SELECT * FROM Switch WHERE name=\"" + name + "\"");
+            List<ODocument> resultset = database.Query(query).ToList();
+
+            JavaScriptSerializer converter = new JavaScriptSerializer();
+
+            List<Switch> AllSwitches = new List<Switch>();
+
+            foreach (ODocument doc in resultset)
+            {
+                var json = converter.Serialize(doc);
+                String a = json.ToString();
+                Switch d = converter.Deserialize<Switch>(a);
+                AllSwitches.Add(d);
+            }
+
+            Switch router = null;
+            if (AllSwitches != null)
+                router = AllSwitches[0];
+            database.Close();
+
+            return router;
+        }
+
         public static void UpdateSwitch(String name, String SerialNumber, String Manufacturer,
             int NumberOfPorts, int NumberOfTakenPorts,
             List<String> MacAddressList, String SwitchNameOld, String SerialNumberOld)
@@ -399,6 +529,63 @@ namespace diplomski
                 .Set("NumberOfPorts", NumberOfPorts)
                 .Set("NumberOfTakenPorts", NumberOfTakenPorts)
                 .Set("MacAddressList", MacAddressList).Run();
+        }
+        #endregion
+
+        #region Computer
+        public static ODocument ComputerByName(String name)
+        {
+            ODatabase database = InitDB();
+            string query = String.Format("SELECT * FROM Computer WHERE name=\"" + name + "\"");
+            List<ODocument> resultset = database.Query(query).ToList();
+
+
+            List<ODocument> AllComputers = new List<ODocument>();
+
+            foreach (ODocument doc in resultset)
+            {
+                AllComputers.Add(doc);
+            }
+
+            ODocument computer = null;
+            if (AllComputers != null)
+                computer = AllComputers[0];
+            database.Close();
+
+            return computer;
+        }
+
+        #endregion
+
+        #region Node
+        public static ODocument NodeByName(String name)
+        {
+            ODatabase database = InitDB();
+            string query = String.Format("SELECT * FROM Node WHERE name=\"" + name + "\"");
+            List<ODocument> resultset = database.Query(query).ToList();
+
+
+            List<ODocument> AllNodes = new List<ODocument>();
+
+            foreach (ODocument doc in resultset)
+            {
+                AllNodes.Add(doc);
+            }
+
+            ODocument node = null;
+            if (AllNodes != null)
+                node = AllNodes[0];
+            database.Close();
+
+            return node;
+        }
+        #endregion
+
+        #region Edge
+        public static void CreateEdge(ORID o1,ORID o2, String connectionTypeValue, String CableTypeValue,
+            LanCable lanCable,OpticCable opticCable)
+        {
+
         }
         #endregion
     }

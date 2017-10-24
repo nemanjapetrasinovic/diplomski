@@ -197,6 +197,7 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\ConnectController.cs" />
     <Compile Include="Controllers\DesktopController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LaptopController.cs" />
@@ -207,10 +208,13 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Cable.cs" />
     <Compile Include="Models\Computer.cs" />
     <Compile Include="Models\Desktop.cs" />
+    <Compile Include="Models\LanCable.cs" />
     <Compile Include="Models\Laptop.cs" />
     <Compile Include="Models\Node.cs" />
+    <Compile Include="Models\OpticCable.cs" />
     <Compile Include="Models\Router.cs" />
     <Compile Include="Models\Server.cs" />
     <Compile Include="Models\Switch.cs" />
@@ -247,6 +251,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Scripts\MyScripts\Connect.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Web.config" />
@@ -283,6 +288,7 @@
     <Content Include="Views\Switch\AddSwitch.cshtml" />
     <Content Include="Views\Switch\Edit.cshtml" />
     <Content Include="Views\Switch\Details.cshtml" />
+    <Content Include="Views\Connect\AddConnection.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
