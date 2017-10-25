@@ -5,7 +5,7 @@ using System.Web;
 
 namespace diplomski.Models
 {
-    public abstract class Node
+    public class Node
     {
         public String name { get; set; }
         public String SerialNumber { get; set; }

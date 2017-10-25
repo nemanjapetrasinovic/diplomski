@@ -5,7 +5,7 @@ using System.Web;
 
 namespace diplomski.Models
 {
-    public abstract class Computer
+    public class Computer
     {
         public String name { get; set; }
         public String OS { get; set; }

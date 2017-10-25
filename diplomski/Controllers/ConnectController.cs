@@ -58,7 +58,7 @@ namespace diplomski.Controllers
                 o1 = node.GetField<ORID>("@ORID");
 
             ORID o2 = null;
-            if (computer != null)
+            if (computer1 != null)
                 o2 = computer1.GetField<ORID>("@ORID");
             else if (node != null)
                 o2 = node1.GetField<ORID>("@ORID");
@@ -72,7 +72,7 @@ namespace diplomski.Controllers
             opticCable.Material = OpticMaterial;
             opticCable.Mode = OpticMode;
 
-            DataProvider.CreateEdge(o1, o2, connectionTypeValue, CableTypeValue, lanCable, opticCable);
+            DataProvider.CreateEdgeCable(o1, o2, connectionTypeValue, CableTypeValue, lanCable, opticCable);
 
             return View();
         }

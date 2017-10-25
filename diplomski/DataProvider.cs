@@ -5,6 +5,8 @@ using System.Web;
 using diplomski.Models;
 using Orient.Client;
 using System.Web.Script.Serialization;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 
 namespace diplomski
 {
@@ -582,9 +584,56 @@ namespace diplomski
         #endregion
 
         #region Edge
-        public static void CreateEdge(ORID o1,ORID o2, String connectionTypeValue, String CableTypeValue,
+        public static void CreateEdgeCable(ORID o1,ORID o2, String connectionTypeValue, String CableTypeValue,
             LanCable lanCable,OpticCable opticCable)
         {
+            ODatabase database = InitDB();
+
+            String query = "SELECT * FROM Computer WHERE @rid=" + o1.RID.ToString();
+            List<ODocument> resultset = database.Query(query).ToList();
+            JavaScriptSerializer converter = new JavaScriptSerializer();
+
+            List<Computer> AllComputers = new List<Computer>();
+            String macAddress1 = null;
+            foreach (ODocument doc in resultset)
+            { 
+                var json = converter.Serialize(doc);
+                var data = (JObject)JsonConvert.DeserializeObject(json);
+                macAddress1 = data["LanMacAddress"].Value<string>();
+            }
+
+
+            String query1 = "SELECT * FROM Node WHERE @rid=" + o1.RID.ToString();
+            List<ODocument> resultset1 = database.Query(query).ToList();
+
+            List<Node> AllNodes = new List<Node>();
+
+            foreach (ODocument doc in resultset1)
+            {
+                var json = converter.Serialize(doc);
+                String a = json.ToString();
+                Node d = converter.Deserialize<Node>(a);
+                AllNodes.Add(d);
+            }
+
+            
+
+            if(AllComputers.Count()!=0)
+            {
+                var json= converter.Serialize(AllComputers[0]);
+                var data = (JObject)JsonConvert.DeserializeObject(json);
+                macAddress1 = data["LanMacAddress"].Value<string>();
+            }
+            else if(AllNodes.Count() !=0)
+            {
+                Node n = AllNodes[0];
+                if(n.NumberOfTakenPorts!=n.NumberOfPorts)
+                {
+                    macAddress1 = n.MacAddressList.ElementAt(n.NumberOfTakenPorts - 1);
+                }
+                
+            }
+            
 
         }
         #endregion
