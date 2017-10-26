@@ -218,6 +218,7 @@
     <Compile Include="Models\Router.cs" />
     <Compile Include="Models\Server.cs" />
     <Compile Include="Models\Switch.cs" />
+    <Compile Include="Models\WiFiConnection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -2,14 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using diplomski.Models;
 
 namespace diplomski.Models
 {
-    public class Router:Node
+    public class WiFiConnection
     {
-        public String OS { get; set; }
         public String WiFiNetworkName { get; set; }
-        public String WiFiMacAddress { get; set; }
+        public String HostMacAddress { get; set; }
+        public String ClientMacAddress { get; set; }
     }
 }

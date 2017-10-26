@@ -8,6 +8,6 @@ namespace diplomski.Models
 {
     public class Desktop:Computer
     {
-        public String LanMacAddress { get; set; }
+        
     }
 }

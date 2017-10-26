@@ -584,57 +584,427 @@ namespace diplomski
         #endregion
 
         #region Edge
-        public static void CreateEdgeCable(ORID o1,ORID o2, String connectionTypeValue, String CableTypeValue,
+        public static void CreateEdgeCable(ORID o1,ORID o2, String firstNodeType, String secondNodeType,
+            String connectionTypeValue, String CableTypeValue,
             LanCable lanCable,OpticCable opticCable)
         {
             ODatabase database = InitDB();
 
-            String query = "SELECT * FROM Computer WHERE @rid=" + o1.RID.ToString();
-            List<ODocument> resultset = database.Query(query).ToList();
-            JavaScriptSerializer converter = new JavaScriptSerializer();
-
-            List<Computer> AllComputers = new List<Computer>();
-            String macAddress1 = null;
-            foreach (ODocument doc in resultset)
-            { 
-                var json = converter.Serialize(doc);
-                var data = (JObject)JsonConvert.DeserializeObject(json);
-                macAddress1 = data["LanMacAddress"].Value<string>();
-            }
-
-
-            String query1 = "SELECT * FROM Node WHERE @rid=" + o1.RID.ToString();
-            List<ODocument> resultset1 = database.Query(query).ToList();
-
-            List<Node> AllNodes = new List<Node>();
-
-            foreach (ODocument doc in resultset1)
+            if ((firstNodeType == "Desktop" || firstNodeType == "Laptop" || firstNodeType == "Server")
+                && (secondNodeType == "Router" || secondNodeType == "Switch"))
             {
-                var json = converter.Serialize(doc);
-                String a = json.ToString();
-                Node d = converter.Deserialize<Node>(a);
-                AllNodes.Add(d);
-            }
+                String query = "SELECT * FROM Computer WHERE @rid=" + o1.RID.ToString();
+                List<ODocument> resultset = database.Query(query).ToList();
+                JavaScriptSerializer converter = new JavaScriptSerializer();
 
-            
-
-            if(AllComputers.Count()!=0)
-            {
-                var json= converter.Serialize(AllComputers[0]);
-                var data = (JObject)JsonConvert.DeserializeObject(json);
-                macAddress1 = data["LanMacAddress"].Value<string>();
-            }
-            else if(AllNodes.Count() !=0)
-            {
-                Node n = AllNodes[0];
-                if(n.NumberOfTakenPorts!=n.NumberOfPorts)
+                List<Computer> AllComputers = new List<Computer>();
+                String macAddress1 = null;
+                foreach (ODocument doc in resultset)
                 {
-                    macAddress1 = n.MacAddressList.ElementAt(n.NumberOfTakenPorts - 1);
+                    var json = converter.Serialize(doc);
+                    String a = json.ToString();
+                    Computer d = converter.Deserialize<Computer>(a);
+                    AllComputers.Add(d);
                 }
-                
-            }
-            
 
+                Computer computer = null;
+                if (AllComputers != null)
+                    computer = AllComputers[0];
+
+                macAddress1 = computer.LanMacAddress;
+
+                String query1 = "SELECT * FROM Node WHERE @rid=" + o2.RID.ToString();
+                List<ODocument> resultset1 = database.Query(query1).ToList();
+
+                List<Node> AllNodes = new List<Node>();
+
+                foreach (ODocument doc in resultset1)
+                {
+                    var json = converter.Serialize(doc);
+                    String a = json.ToString();
+                    Node d = converter.Deserialize<Node>(a);
+                    AllNodes.Add(d);
+                }
+
+                Node node = null;
+                if (AllNodes != null)
+                    node = AllNodes[0];
+
+                String macAddress2 = null;
+                if (node != null)
+                {
+                    if (node.NumberOfPorts != node.NumberOfTakenPorts)
+                    {
+                        node.NumberOfTakenPorts++;
+                        macAddress2 = node.MacAddressList.ElementAt(node.NumberOfTakenPorts - 1);
+                    }
+                }
+
+                if (connectionTypeValue == "Cable")
+                {
+                    if (CableTypeValue == "Lan")
+                    {
+                        lanCable.End1 = macAddress1;
+                        lanCable.End2 = macAddress2;
+                        lanCable.Type = "Lan";
+
+                        String addCableQuerry = "CREATE EDGE LanCable FROM " + o1.RID.ToString() + " TO " + o2.RID.ToString() +
+                            " SET End1 = \"" + lanCable.End1 + "\", End2 = \"" + lanCable.End2 + "\", Type=\"" + lanCable.Type
+                            + "\", Manufacturer=\"" + lanCable.Manufacturer + "\", Category=\"" + lanCable.Category + "\"";
+
+                        database.Command(addCableQuerry);
+
+                        if (node != null)
+                        {
+                            database.Update(o2)
+                            .Set("NumberOfPorts", node.NumberOfPorts)
+                            .Set("NumberOfTakenPorts", node.NumberOfTakenPorts)
+                            .Set("MacAddressList", node.MacAddressList).Run();
+                        }
+                        return;
+                    }
+                }
+                else
+                if (connectionTypeValue=="WiFi")
+                {
+                    if(firstNodeType=="Laptop")
+                    {
+                        String queryL = "SELECT * FROM Laptop WHERE @rid=" + o1.RID.ToString();
+                        List<ODocument> resultsetL = database.Query(queryL).ToList();
+
+                        List<Laptop> AllLaptops = new List<Laptop>();
+                        foreach (ODocument doc in resultset)
+                        {
+                            var json = converter.Serialize(doc);
+                            String a = json.ToString();
+                            Laptop d = converter.Deserialize<Laptop>(a);
+                            AllLaptops.Add(d);
+                        }
+
+                        Laptop laptop = null;
+                        if (AllLaptops != null)
+                            laptop = AllLaptops[0];
+
+                        macAddress1 = laptop.WifiMacAddress;
+                    }
+
+                    String query2 = "SELECT * FROM Router WHERE @rid=" + o2.RID.ToString();
+                    List<ODocument> resultset2 = database.Query(query1).ToList();
+
+                    List<Router> AllRouters = new List<Router>();
+
+                    foreach (ODocument doc in resultset2)
+                    {
+                        var json = converter.Serialize(doc);
+                        String a = json.ToString();
+                        Router d = converter.Deserialize<Router>(a);
+                        AllRouters.Add(d);
+                    }
+
+                    Router router = null;
+                    if (AllRouters != null)
+                        router = AllRouters[0];
+
+                    if (router != null)
+                        macAddress2 = router.WiFiMacAddress;
+
+                    WiFiConnection wificonnection = new WiFiConnection();
+                    wificonnection.ClientMacAddress = macAddress1;
+                    wificonnection.HostMacAddress = macAddress2;
+                    wificonnection.WiFiNetworkName = router.WiFiNetworkName;
+
+                    String addWifiQuerry = "CREATE EDGE WiFiConnection FROM " + o1.RID.ToString() + " TO " + o2.RID.ToString() +
+                            " SET WiFiNetworkName = \"" + wificonnection.WiFiNetworkName 
+                            + "\", HostMacAddress = \"" + wificonnection.HostMacAddress 
+                            + "\", ClientMacAddress=\"" + wificonnection.ClientMacAddress + "\"";
+                    database.Command(addWifiQuerry);
+
+                }
+            }
+            else 
+            if ((secondNodeType == "Desktop" || secondNodeType == "Laptop" || secondNodeType == "Server")
+                && (firstNodeType == "Router" || firstNodeType == "Switch"))
+            {
+                String query = "SELECT * FROM Computer WHERE @rid=" + o2.RID.ToString();
+                List<ODocument> resultset = database.Query(query).ToList();
+                JavaScriptSerializer converter = new JavaScriptSerializer();
+
+                List<Computer> AllComputers = new List<Computer>();
+                String macAddress1 = null;
+                foreach (ODocument doc in resultset)
+                {
+                    var json = converter.Serialize(doc);
+                    String a = json.ToString();
+                    Computer d = converter.Deserialize<Computer>(a);
+                    AllComputers.Add(d);
+                }
+
+                Computer computer = null;
+                if (AllComputers != null)
+                    computer = AllComputers[0];
+
+                macAddress1 = computer.LanMacAddress;
+
+                String query1 = "SELECT * FROM Node WHERE @rid=" + o1.RID.ToString();
+                List<ODocument> resultset1 = database.Query(query1).ToList();
+
+                List<Node> AllNodes = new List<Node>();
+
+                foreach (ODocument doc in resultset1)
+                {
+                    var json = converter.Serialize(doc);
+                    String a = json.ToString();
+                    Node d = converter.Deserialize<Node>(a);
+                    AllNodes.Add(d);
+                }
+
+                Node node = null;
+                if (AllNodes != null)
+                    node = AllNodes[0];
+
+                String macAddress2 = null;
+                if (node != null)
+                {
+                    if (node.NumberOfPorts != node.NumberOfTakenPorts)
+                    {
+                        node.NumberOfTakenPorts++;
+                        macAddress2 = node.MacAddressList.ElementAt(node.NumberOfTakenPorts - 1);
+                    }
+                }
+
+                if (connectionTypeValue == "Cable")
+                {
+                    if (CableTypeValue == "Lan")
+                    {
+                        lanCable.End1 = macAddress1;
+                        lanCable.End2 = macAddress2;
+                        lanCable.Type = "Lan";
+
+                        String addCableQuerry = "CREATE EDGE LanCable FROM " + o2.RID.ToString() + " TO " + o1.RID.ToString() +
+                            " SET End1 = \"" + lanCable.End1 + "\", End2 = \"" + lanCable.End2 + "\", Type=\"" + lanCable.Type
+                            + "\", Manufacturer=\"" + lanCable.Manufacturer + "\", Category=\"" + lanCable.Category + "\"";
+
+                        database.Command(addCableQuerry);
+
+                        if (node != null)
+                        {
+                            database.Update(o1)
+                            .Set("NumberOfPorts", node.NumberOfPorts)
+                            .Set("NumberOfTakenPorts", node.NumberOfTakenPorts)
+                            .Set("MacAddressList", node.MacAddressList).Run();
+                        }
+                        return;
+                    }
+                }
+                if (connectionTypeValue == "WiFi")
+                {
+                    if (secondNodeType == "Laptop")
+                    {
+                        String queryL = "SELECT * FROM Laptop WHERE @rid=" + o2.RID.ToString();
+                        List<ODocument> resultsetL = database.Query(queryL).ToList();
+
+                        List<Laptop> AllLaptops = new List<Laptop>();
+                        foreach (ODocument doc in resultset)
+                        {
+                            var json = converter.Serialize(doc);
+                            String a = json.ToString();
+                            Laptop d = converter.Deserialize<Laptop>(a);
+                            AllLaptops.Add(d);
+                        }
+
+                        Laptop laptop = null;
+                        if (AllLaptops != null)
+                            laptop = AllLaptops[0];
+
+                        macAddress1 = laptop.WifiMacAddress;
+                    }
+
+                    String query2 = "SELECT * FROM Router WHERE @rid=" + o1.RID.ToString();
+                    List<ODocument> resultset2 = database.Query(query1).ToList();
+
+                    List<Router> AllRouters = new List<Router>();
+
+                    foreach (ODocument doc in resultset2)
+                    {
+                        var json = converter.Serialize(doc);
+                        String a = json.ToString();
+                        Router d = converter.Deserialize<Router>(a);
+                        AllRouters.Add(d);
+                    }
+
+                    Router router = null;
+                    if (AllRouters != null)
+                        router = AllRouters[0];
+
+                    if (router != null)
+                        macAddress2 = router.WiFiMacAddress;
+
+                    WiFiConnection wificonnection = new WiFiConnection();
+                    wificonnection.ClientMacAddress = macAddress1;
+                    wificonnection.HostMacAddress = macAddress2;
+                    wificonnection.WiFiNetworkName = router.WiFiNetworkName;
+
+                    String addWifiQuerry = "CREATE EDGE WiFiConnection FROM " + o2.RID.ToString() + " TO " + o1.RID.ToString() +
+                            " SET WiFiNetworkName = \"" + wificonnection.WiFiNetworkName
+                            + "\", HostMacAddress = \"" + wificonnection.HostMacAddress
+                            + "\", ClientMacAddress=\"" + wificonnection.ClientMacAddress + "\"";
+                    database.Command(addWifiQuerry);
+
+                }
+            }
+            else
+            if ((firstNodeType == "Desktop" || firstNodeType == "Laptop" || firstNodeType == "Server")
+                && (secondNodeType == "Desktop" || secondNodeType == "Laptop" || secondNodeType == "Server"))
+            {
+                String query = "SELECT * FROM Computer WHERE @rid=" + o1.RID.ToString();
+                List<ODocument> resultset = database.Query(query).ToList();
+                JavaScriptSerializer converter = new JavaScriptSerializer();
+
+                List<Computer> AllComputers = new List<Computer>();
+                String macAddress1 = null;
+                foreach (ODocument doc in resultset)
+                {
+                    var json = converter.Serialize(doc);
+                    String a = json.ToString();
+                    Computer d = converter.Deserialize<Computer>(a);
+                    AllComputers.Add(d);
+                }
+
+                Computer computer = null;
+                if (AllComputers != null)
+                    computer = AllComputers[0];
+
+                macAddress1 = computer.LanMacAddress;
+
+                String query1 = "SELECT * FROM Computer WHERE @rid=" + o2.RID.ToString();
+                List<ODocument> resultset1 = database.Query(query1).ToList();
+
+                List<Computer> AllComputers1 = new List<Computer>();
+                String macAddress2 = null;
+                foreach (ODocument doc in resultset1)
+                {
+                    var json = converter.Serialize(doc);
+                    String a = json.ToString();
+                    Computer d = converter.Deserialize<Computer>(a);
+                    AllComputers1.Add(d);
+                }
+
+                Computer computer1 = null;
+                if (AllComputers1 != null)
+                    computer1 = AllComputers1[0];
+
+                macAddress2 = computer1.LanMacAddress;
+
+                if (connectionTypeValue == "Cable")
+                {
+                    if (CableTypeValue == "Lan")
+                    {
+                        lanCable.End1 = macAddress1;
+                        lanCable.End2 = macAddress2;
+                        lanCable.Type = "Lan";
+
+                        String addCableQuerry = "CREATE EDGE LanCable FROM " + o1.RID.ToString() + " TO " + o2.RID.ToString() +
+                            " SET End1 = \"" + lanCable.End1 + "\", End2 = \"" + lanCable.End2 + "\", Type=\"" + lanCable.Type
+                            + "\", Manufacturer=\"" + lanCable.Manufacturer + "\", Category=\"" + lanCable.Category + "\"";
+
+                        database.Command(addCableQuerry);
+
+                        return;
+                    }
+                }
+            }
+            else
+            if ((firstNodeType == "Router" || firstNodeType == "Switch")
+                && (secondNodeType == "Router" || secondNodeType == "Switch"))
+            {
+                String query = "SELECT * FROM Node WHERE @rid=" + o1.RID.ToString();
+                JavaScriptSerializer converter = new JavaScriptSerializer();
+                List<ODocument> resultset = database.Query(query).ToList();
+
+                List<Node> AllNodes = new List<Node>();
+
+                foreach (ODocument doc in resultset)
+                {
+                    var json = converter.Serialize(doc);
+                    String a = json.ToString();
+                    Node d = converter.Deserialize<Node>(a);
+                    AllNodes.Add(d);
+                }
+
+                Node node = null;
+                if (AllNodes != null)
+                    node = AllNodes[0];
+
+                String macAddress1 = null;
+                if (node != null)
+                {
+                    if (node.NumberOfPorts != node.NumberOfTakenPorts)
+                    {
+                        node.NumberOfTakenPorts++;
+                        macAddress1 = node.MacAddressList.ElementAt(node.NumberOfTakenPorts - 1);
+                    }
+                }
+
+                String query1 = "SELECT * FROM Node WHERE @rid=" + o2.RID.ToString();
+                List<ODocument> resultset1 = database.Query(query1).ToList();
+
+                List<Node> AllNodes1 = new List<Node>();
+
+                foreach (ODocument doc in resultset1)
+                {
+                    var json = converter.Serialize(doc);
+                    String a = json.ToString();
+                    Node d = converter.Deserialize<Node>(a);
+                    AllNodes1.Add(d);
+                }
+
+                Node node1 = null;
+                if (AllNodes1 != null)
+                    node1 = AllNodes1[0];
+
+                String macAddress2 = null;
+                if (node1 != null)
+                {
+                    if (node1.NumberOfPorts != node1.NumberOfTakenPorts)
+                    {
+                        node1.NumberOfTakenPorts++;
+                        macAddress2 = node1.MacAddressList.ElementAt(node1.NumberOfTakenPorts - 1);
+                    }
+                }
+
+                if (connectionTypeValue == "Cable")
+                {
+                    if (CableTypeValue == "Lan")
+                    {
+                        lanCable.End1 = macAddress1;
+                        lanCable.End2 = macAddress2;
+                        lanCable.Type = "Lan";
+
+                        String addCableQuerry = "CREATE EDGE LanCable FROM " + o1.RID.ToString() + " TO " + o2.RID.ToString() +
+                            " SET End1 = \"" + lanCable.End1 + "\", End2 = \"" + lanCable.End2 + "\", Type=\"" + lanCable.Type
+                            + "\", Manufacturer=\"" + lanCable.Manufacturer + "\", Category=\"" + lanCable.Category + "\"";
+
+                        database.Command(addCableQuerry);
+
+                        if (node != null)
+                        {
+                            database.Update(o1)
+                            .Set("NumberOfPorts", node.NumberOfPorts)
+                            .Set("NumberOfTakenPorts", node.NumberOfTakenPorts)
+                            .Set("MacAddressList", node.MacAddressList).Run();
+                        }
+
+                        if (node1 != null)
+                        {
+                            database.Update(o2)
+                            .Set("NumberOfPorts", node1.NumberOfPorts)
+                            .Set("NumberOfTakenPorts", node1.NumberOfTakenPorts)
+                            .Set("MacAddressList", node1.MacAddressList).Run();
+                        }
+                        return;
+                    }
+                }
+            }
         }
         #endregion
     }

@@ -8,7 +8,6 @@ namespace diplomski.Models
 {
     public class Laptop:Computer
     {
-        public String LanMacAddress { get; set; }
         public String WifiMacAddress { get; set; }
         public String WiFiNetworkName { get; set; }
     }

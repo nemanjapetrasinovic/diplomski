@@ -9,5 +9,6 @@ namespace diplomski.Models
     {
         public String name { get; set; }
         public String OS { get; set; }
+        public String LanMacAddress { get; set; }
     }
 }
