@@ -1,0 +1,391 @@
+﻿@using diplomski.Models;
+@using System.Linq;
+@Scripts.Render("~/Scripts/MyScripts/Connect.js")
+
+@{
+    ViewBag.Title = "AddConnection";
+}
+
+<h2>AddConnection</h2>
+
+@{
+    List<String> Type = new List<String>();
+    Type.Add("Desktop");
+    Type.Add("Laptop");
+    Type.Add("Server");
+    Type.Add("Router");
+    Type.Add("Switch");
+
+    ICollection<Desktop> desktops = ViewBag.Desktops as ICollection<Desktop>;
+    ICollection<Laptop> laptops = ViewBag.Laptops as ICollection<Laptop>;
+    ICollection<Server> servers = ViewBag.Servers as ICollection<Server>;
+    ICollection<Router> routers = ViewBag.Routers as ICollection<Router>;
+    ICollection<Switch> switches = ViewBag.Switches as ICollection<Switch>;
+
+
+}
+
+@Html.DropDownList("Type",
+                    new SelectList(Type),
+                    "Select Computer/Router/Switch",
+                    new
+                    {
+                        @class = "form-control",
+                        @style = "display: block;",
+                        @onchange = "myFunction()"
+                    })
+
+<br/>
+
+@{
+    if (desktops == null)
+    {
+        @Html.DropDownList("Desktop",
+              Enumerable.Empty<SelectListItem>(),
+              "Select Desktop",
+              new
+              {
+                  @class = "form-control",
+                  @style = "display: none;"
+              })
+    }
+    else
+    {
+        @Html.DropDownList("Desktop",
+              new SelectList(desktops, "name", "name"),
+              "Select Desktop",
+              new
+              {
+                  @class = "form-control",
+                  @style = "display: none;"
+              })
+    }
+}
+
+@{
+    if (laptops == null)
+    {
+        @Html.DropDownList("Laptop",
+              Enumerable.Empty<SelectListItem>(),
+              "Select Laptop",
+              new
+              {
+                  @class = "form-control",
+                  @style = "display: none;"
+              })
+    }
+    else
+    {
+       @Html.DropDownList("Laptop",
+                new SelectList(laptops, "name", "name"),
+                "Select Laptop",
+                new
+                {
+                    @class = "form-control",
+                    @style = "display: none;"
+                })
+    }
+}
+
+@{
+    if (servers == null)
+    {
+        @Html.DropDownList("Server",
+              Enumerable.Empty<SelectListItem>(),
+              "Select Server",
+              new
+              {
+                  @class = "form-control",
+                  @style = "display: none;"
+              })
+    }
+    else
+    {
+        @Html.DropDownList("Server",
+              new SelectList(servers, "name", "name"),
+              "Select Server",
+              new
+              {
+                  @class = "form-control",
+                  @style = "display: none;"
+              })
+    }
+}
+
+@{
+    if (routers == null)
+    {
+        @Html.DropDownList("Router",
+              Enumerable.Empty<SelectListItem>(),
+              "Select Router",
+              new
+              {
+                  @class = "form-control",
+                  @style = "display: none;"
+              })
+    }
+    else
+    {
+        @Html.DropDownList("Router",
+              new SelectList(routers, "name", "name"),
+              "Select Router",
+              new
+              {
+                  @class = "form-control",
+                  @style = "display: none;"
+              })
+    }
+}
+
+@{
+    if (switches == null)
+    {
+        @Html.DropDownList("Switch",
+              Enumerable.Empty<SelectListItem>(),
+              "Select Switch",
+              new
+              {
+                  @class = "form-control",
+                  @style = "display: none;"
+              })
+    }
+    else
+    {
+        @Html.DropDownList("Switch",
+              new SelectList(switches, "name", "name"),
+              "Select Switch",
+              new
+              {
+                  @class = "form-control",
+                  @style = "display: none;"
+              })
+    }
+}
+
+
+<!-- Drugi computer ili switch -->
+<br />
+@Html.DropDownList("Type1",
+                    new SelectList(Type),
+                    "Select Computer/Router/Switch",
+                    new
+                    {
+                        @class = "form-control",
+                        @style = "display: block;",
+                        @onchange = "myFunction1()"
+                    })
+
+<br />
+
+@{
+    if (desktops == null)
+    {
+        @Html.DropDownList("Desktop1",
+              Enumerable.Empty<SelectListItem>(),
+              "Select Desktop",
+              new
+              {
+                  @class = "form-control",
+                  @style = "display: none;"
+              })
+    }
+    else
+    {
+        @Html.DropDownList("Desktop1",
+              new SelectList(desktops, "name", "name"),
+              "Select Desktop",
+              new
+              {
+                  @class = "form-control",
+                  @style = "display: none;"
+              })
+    }
+}
+
+@{
+    if (laptops == null)
+    {
+        @Html.DropDownList("Laptop1",
+              Enumerable.Empty<SelectListItem>(),
+              "Select Laptop",
+              new
+              {
+                  @class = "form-control",
+                  @style = "display: none;"
+              })
+    }
+    else
+    {
+        @Html.DropDownList("Laptop1",
+              new SelectList(laptops, "name", "name"),
+              "Select Laptop",
+              new
+              {
+                  @class = "form-control",
+                  @style = "display: none;"
+              })
+    }
+}
+
+@{
+    if (servers == null)
+    {
+        @Html.DropDownList("Server1",
+              Enumerable.Empty<SelectListItem>(),
+              "Select Server",
+              new
+              {
+                  @class = "form-control",
+                  @style = "display: none;"
+              })
+    }
+    else
+    {
+        @Html.DropDownList("Server1",
+              new SelectList(servers, "name", "name"),
+              "Select Server",
+              new
+              {
+                  @class = "form-control",
+                  @style = "display: none;"
+              })
+    }
+}
+
+@{
+    if (routers == null)
+    {
+        @Html.DropDownList("Router1",
+              Enumerable.Empty<SelectListItem>(),
+              "Select Router",
+              new
+              {
+                  @class = "form-control",
+                  @style = "display: none;"
+              })
+    }
+    else
+    {
+        @Html.DropDownList("Router1",
+              new SelectList(routers, "name", "name"),
+              "Select Router",
+              new
+              {
+                  @class = "form-control",
+                  @style = "display: none;"
+              })
+    }
+}
+
+@{
+    if (switches == null)
+    {
+        @Html.DropDownList("Switch1",
+              Enumerable.Empty<SelectListItem>(),
+              "Select Switch",
+              new
+              {
+                  @class = "form-control",
+                  @style = "display: none;"
+              })
+    }
+    else
+    {
+        @Html.DropDownList("Switch1",
+              new SelectList(switches, "name", "name"),
+              "Select Switch",
+              new
+              {
+                  @class = "form-control",
+                  @style = "display: none;"
+              })
+    }
+}
+
+<br/>
+@{
+    List<String> ConnectionType = new List<string>();
+    ConnectionType.Add("Cable");
+    ConnectionType.Add("WiFi");
+
+    @Html.DropDownList("ConnectionType",
+                    new SelectList(ConnectionType),
+                    "Select Conection type",
+                    new
+                    {
+                        @class = "form-control",
+                        @style = "display: block;",
+                        @onchange = "connectionSelect()"
+                    })
+}
+
+<br />
+
+<!-- konekcija kabl-->
+@{
+    List<String> CableType = new List<string>();
+    CableType.Add("Lan");
+    CableType.Add("Optic");
+
+    @Html.DropDownList("CableType",
+                    new SelectList(CableType),
+                    "Select cable type",
+                    new
+                    {
+                        @class = "form-control",
+                        @style = "display: none;",
+                        @onchange = "showCableProperties()"
+                    })
+}
+
+@{
+    List<String> LanCategories = new List<string>();
+    LanCategories.Add("Cat5");
+    LanCategories.Add("Cat5e");
+    LanCategories.Add("Cat6");
+    LanCategories.Add("Cat6a");
+
+    @Html.DropDownList("LanCategory",
+                    new SelectList(LanCategories),
+                    "Select lan category",
+                    new
+                    {
+                        @class = "form-control",
+                        @style = "display: none;",
+                    })
+    @Html.Editor("LanManufacturer", new { htmlAttributes = new {
+    @class = "form-control", @style = "display: none;",
+    placeholder = "Manufacturer"
+} })
+}
+
+<!-- opticki kabl opcije-->
+@{
+    @Html.Editor("OpticManufacturer", new { htmlAttributes = new
+{
+    @class = "form-control",
+    @style = "display: none;",
+    placeholder = "Manufacturer"
+}
+})
+    @Html.Editor("OpticMaterial", new { htmlAttributes = new {
+    @class = "form-control",
+    @style = "display: none;",
+    placeholder = "Optic material"
+} })
+
+
+    List<String> Mode = new List<string>();
+    Mode.Add("Single");
+    Mode.Add("Multi");
+
+    @Html.DropDownList("OpticMode",
+                    new SelectList(Mode),
+                    "Select mode",
+                    new
+                    {
+                        @class = "form-control",
+                        @style = "display: none;",
+                    })
+}
+<button type="button" class="btn btn-default btn-md" onclick="makeConnection();">Make connection</button>

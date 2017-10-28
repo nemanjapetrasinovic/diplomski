@@ -1006,6 +1006,27 @@ namespace diplomski
                 }
             }
         }
+
+        public static List<LanCable> GetAllLanCables()
+        {
+            ODatabase database = InitDB();
+            String query = "SELECT * FROM LanCable";
+            List<ODocument> resultset = database.Query(query).ToList<ODocument>();
+
+            JavaScriptSerializer converter = new JavaScriptSerializer();
+
+            List<LanCable> AllLanCables = new List<LanCable>();
+
+            foreach (ODocument doc in resultset)
+            {
+                var json = converter.Serialize(doc);
+                String a = json.ToString();
+                LanCable d = converter.Deserialize<LanCable>(a);
+                AllLanCables.Add(d);
+            }
+            return AllLanCables;
+
+        }
         #endregion
     }
 }
