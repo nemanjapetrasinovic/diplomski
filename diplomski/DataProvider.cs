@@ -1028,5 +1028,97 @@ namespace diplomski
 
         }
         #endregion
+
+        #region Traversals
+        public static List<ODocument> FindRouterConnections(String name, String SerialNumber)
+        {
+            ODatabase database = InitDB();
+            string query = String.Format("SELECT * FROM Router WHERE name=\"" + name + "\" AND SerialNumber=\""
+                 + SerialNumber + "\"");
+            List<ODocument> result = database.Query(query).ToList();
+
+            ODocument o = result[0];
+            ORID z = o.GetField<ORID>("@ORID");
+
+
+            String querry="TRAVERSE * FROM "+z+" WHILE $depth<=2";
+            List<ODocument> resultset = database.Query(querry).ToList<ODocument>();
+
+            database.Close();
+            return resultset;
+        }
+
+        public static List<ODocument> FindSwitchConnections(String name, String SerialNumber)
+        {
+            ODatabase database = InitDB();
+            string query = String.Format("SELECT * FROM Switch WHERE name=\"" + name + "\" AND SerialNumber=\""
+                 + SerialNumber + "\"");
+            List<ODocument> result = database.Query(query).ToList();
+
+            ODocument o = result[0];
+            ORID z = o.GetField<ORID>("@ORID");
+
+
+            String querry = "TRAVERSE * FROM " + z + " WHILE $depth<=2";
+            List<ODocument> resultset = database.Query(querry).ToList<ODocument>();
+
+            database.Close();
+            return resultset;
+        }
+
+        public static List<ODocument> FindDesktopConnections(String name, String LanMacAddress)
+        {
+            ODatabase database = InitDB();
+            string query = String.Format("SELECT * FROM Desktop WHERE name=\"" + name + "\" AND LanMacAddress=\""
+                 + LanMacAddress + "\"");
+            List<ODocument> result = database.Query(query).ToList();
+
+            ODocument o = result[0];
+            ORID z = o.GetField<ORID>("@ORID");
+
+
+            String querry = "TRAVERSE * FROM " + z + " WHILE $depth<=2";
+            List<ODocument> resultset = database.Query(querry).ToList<ODocument>();
+
+            database.Close();
+            return resultset;
+        }
+
+        public static List<ODocument> FindLaptopConnections(String name, String LanMacAddress,String WiFiMacAddress)
+        {
+            ODatabase database = InitDB();
+            string query = String.Format("SELECT * FROM Laptop WHERE name=\"" + name + "\" AND LanMacAddress=\""
+                 + LanMacAddress + "\" AND WiFiMacAddress=\""+WiFiMacAddress+"\"");
+            List<ODocument> result = database.Query(query).ToList();
+
+            ODocument o = result[0];
+            ORID z = o.GetField<ORID>("@ORID");
+
+
+            String querry = "TRAVERSE * FROM " + z + " WHILE $depth<=2";
+            List<ODocument> resultset = database.Query(querry).ToList<ODocument>();
+
+            database.Close();
+            return resultset;
+        }
+
+        public static List<ODocument> FindServerConnections(String name, String LanMacAddress)
+        {
+            ODatabase database = InitDB();
+            string query = String.Format("SELECT * FROM Server WHERE name=\"" + name + "\" AND LanMacAddress=\""
+                 + LanMacAddress + "\"");
+            List<ODocument> result = database.Query(query).ToList();
+
+            ODocument o = result[0];
+            ORID z = o.GetField<ORID>("@ORID");
+
+
+            String querry = "TRAVERSE * FROM " + z + " WHILE $depth<=2";
+            List<ODocument> resultset = database.Query(querry).ToList<ODocument>();
+
+            database.Close();
+            return resultset;
+        }
+        #endregion
     }
 }

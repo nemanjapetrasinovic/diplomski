@@ -92,92 +92,105 @@
     var desktops = @Html.Raw(Json.Encode(ViewBag.desktops));
     var desktopArray = new Array();
     var desktopjsons = [];
-    for (var i = desktops.length; i--;) desktopjsons[i] = JSON.stringify(desktops[i]);
 
-    for (i = 0; i < desktops.length; i++) {
-        var d = JSON.parse(desktopjsons[i]);
-        g.nodes.push({
-            id: d["LanMacAddress"],
-            label: d["name"],
-            x: Math.random(),
-            y: Math.random(),
-            size: 40,
-            color: '#2ecc71'
-        });
+    if (desktops != null) {
+        for (var i = desktops.length; i--;) desktopjsons[i] = JSON.stringify(desktops[i]);
+
+        for (i = 0; i < desktops.length; i++) {
+            var d = JSON.parse(desktopjsons[i]);
+            g.nodes.push({
+                id: d["LanMacAddress"],
+                label: d["name"],
+                x: Math.random(),
+                y: Math.random(),
+                size: 40,
+                color: '#2ecc71'
+            });
+        }
     }
-
     var laptops = @Html.Raw(Json.Encode(ViewBag.laptops));
     var laptopArray = new Array();
     var laptopjsons = [];
-    for (var i = laptops.length; i--;) laptopjsons[i] = JSON.stringify(laptops[i]);
+    if (laptops != null) {
+        for (var i = laptops.length; i--;) laptopjsons[i] = JSON.stringify(laptops[i]);
 
-    for (i = 0; i < laptops.length; i++) {
-        var d = JSON.parse(laptopjsons[i]);
-        g.nodes.push({
-            id: d["LanMacAddress"] + ' ' + d["WiFiMacAddress"],
-            label: d["name"],
-            x: Math.random(),
-            y: Math.random(),
-            size: 40,
-            color: '#2980b9'
-        });
+        for (i = 0; i < laptops.length; i++) {
+            var d = JSON.parse(laptopjsons[i]);
+            g.nodes.push({
+                id: d["LanMacAddress"] + ' ' + d["WiFiMacAddress"],
+                label: d["name"],
+                x: Math.random(),
+                y: Math.random(),
+                size: 40,
+                color: '#2980b9'
+            });
+        }
     }
 
     var servers = @Html.Raw(Json.Encode(ViewBag.servers));
     var serverArray = new Array();
     var serverjsons = [];
-    for (var i = servers.length; i--;) serverjsons[i] = JSON.stringify(servers[i]);
+    if (servers != null) {
+        for (var i = servers.length; i--;) serverjsons[i] = JSON.stringify(servers[i]);
 
-    for (i = 0; i < servers.length; i++) {
-        var d = JSON.parse(serverjsons[i]);
-        g.nodes.push({
-            id: d["LanMacAddress"],
-            label: d["name"],
-            x: Math.random(),
-            y: Math.random(),
-            size: 40,
-            color: '#c0392b'
-        });
+        for (i = 0; i < servers.length; i++) {
+            var d = JSON.parse(serverjsons[i]);
+            g.nodes.push({
+                id: d["LanMacAddress"],
+                label: d["name"],
+                x: Math.random(),
+                y: Math.random(),
+                size: 40,
+                color: '#c0392b'
+            });
+        }
     }
 
     var routers = @Html.Raw(Json.Encode(ViewBag.routers));
     var routerArray = new Array();
     var routerjsons = [];
-    for (var i = routers.length; i--;) routerjsons[i] = JSON.stringify(routers[i]);
+    if (routers != null) {
+        for (var i = routers.length; i--;) routerjsons[i] = JSON.stringify(routers[i]);
 
-    for (i = 0; i < routers.length; i++) {
-        var d = JSON.parse(routerjsons[i]);
-        g.nodes.push({
-            id: d["name"] + ' ' + d["SerialNumber"],
-            label: d["name"],
-            x: Math.random(),
-            y: Math.random(),
-            size: 40,
-            color: '#f1c40f'
-        });
+        for (i = 0; i < routers.length; i++) {
+            var d = JSON.parse(routerjsons[i]);
+            g.nodes.push({
+                id: d["name"] + ' ' + d["SerialNumber"],
+                label: d["name"],
+                x: Math.random(),
+                y: Math.random(),
+                size: 40,
+                color: '#f1c40f'
+            });
+        }
     }
 
     var switches = @Html.Raw(Json.Encode(ViewBag.switches));
     var switchArray = new Array();
     var switchjsons = [];
-    for (var i = switches.length; i--;) switchjsons[i] = JSON.stringify(switches[i]);
+    if (switches != null) {
+        for (var i = switches.length; i--;) switchjsons[i] = JSON.stringify(switches[i]);
 
-    for (i = 0; i < switches.length; i++) {
-        var d = JSON.parse(switchjsons[i]);
-        g.nodes.push({
-            id: d["name"] + ' ' + d["SerialNumber"],
-            label: d["name"],
-            x: Math.random(),
-            y: Math.random(),
-            size: 40,
-            color: '#2c3e50'
-        });
+        for (i = 0; i < switches.length; i++) {
+            var d = JSON.parse(switchjsons[i]);
+            g.nodes.push({
+                id: d["name"] + ' ' + d["SerialNumber"],
+                label: d["name"],
+                x: Math.random(),
+                y: Math.random(),
+                size: 40,
+                color: '#2c3e50'
+            });
+        }
     }
 
     var lancables = @Html.Raw(Json.Encode(ViewBag.lancables));
     var lancableArray = new Array();
     var lancablejsons = [];
-    for (var i = lancables.length; i--;) lancablejsons[i] = JSON.stringify(lancables[i]);
+
+    if (lancables != null) {
+        for (var i = lancables.length; i--;) lancablejsons[i] = JSON.stringify(lancables[i]);
+    }
 
     var id1, id2;
 
@@ -185,6 +198,7 @@
         var lancable = lancables[i];
 
         //search in desktops
+        if (desktops!=null)
         for (var j = 0; j < desktops.length; j++) {
             var desktop = desktops[j];
             if (lancable["End1"] == desktop["LanMacAddress"]) {
@@ -192,6 +206,7 @@
             }
         }
 
+        if (desktops != null)
         for (var j = 0; j < desktops.length; j++) {
             var desktop = desktops[j];
             if (lancable["End2"] == desktop["LanMacAddress"]) {
@@ -200,6 +215,7 @@
         }
 
         //search in laptops
+        if (laptops != null)
         for (var j = 0; j < laptops.length; j++) {
             var laptop = laptops[j];
             if (lancable["End1"] == laptop["LanMacAddress"]) {
@@ -207,6 +223,7 @@
             }
         }
 
+        if (laptops != null)
         for (var j = 0; j < laptops.length; j++) {
             var laptop = laptops[j];
             if (lancable["End2"] == laptop["LanMacAddress"]) {
@@ -215,6 +232,7 @@
         }
 
         //search in servers
+        if (servers != null)
         for (var j = 0; j < servers.length; j++) {
             var server = servers[j];
             if (lancable["End1"] == server["LanMacAddress"]) {
@@ -222,6 +240,7 @@
             }
         }
 
+        if (servers != null)
         for (var j = 0; j < servers.length; j++) {
             var server = servers[j];
             if (lancable["End2"] == server["LanMacAddress"]) {
@@ -230,6 +249,7 @@
         }
 
         //search in routers
+        if (routers != null)
         for (var j = 0; j < routers.length; j++) {
             var router = routers[j];
             var rmal = router["MacAddressList"];
@@ -241,6 +261,7 @@
 
         }
 
+        if (routers != null)
         for (var j = 0; j < routers.length; j++) {
             var router = routers[j];
             var rmal = router["MacAddressList"];
@@ -253,6 +274,7 @@
         }
 
         //search in switches
+        if (switches != null)
         for (var j = 0; j < switches.length; j++) {
             var s = switches[j];
             var smal = s["MacAddressList"];
@@ -264,6 +286,7 @@
 
         }
 
+        if (switches != null)
         for (var j = 0; j < switches.length; j++) {
             var s = switches[j];
             var smal = s["MacAddressList"];
