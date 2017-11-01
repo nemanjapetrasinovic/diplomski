@@ -142,5 +142,11 @@ namespace diplomski.Controllers
 
             return View(s);
         }
+
+        public ActionResult DeleteSwitch(String name, String SerialNumber)
+        {
+            DataProvider.DeleteSwitch(name, SerialNumber);
+            return View();
+        }
     }
 }

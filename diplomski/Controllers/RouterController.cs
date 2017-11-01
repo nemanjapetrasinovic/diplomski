@@ -144,5 +144,11 @@ namespace diplomski.Controllers
             @ViewBag.lancables = lancables;
             return View(router);
         }
+
+        public ActionResult DeleteRouter(String name, String SerialNumber)
+        {
+            DataProvider.DeleteRouter(name, SerialNumber);
+            return View();
+        }
     }
 }

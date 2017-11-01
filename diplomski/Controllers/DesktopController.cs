@@ -125,5 +125,11 @@ namespace diplomski.Controllers
             @ViewBag.lancables = lancables;
             return View(desktop);
         }
+
+        public ActionResult DeleteDesktop(String name, String LanMacAddress)
+        {
+            DataProvider.DeleteDesktop(name, LanMacAddress);
+            return View();
+        }
     }
 }

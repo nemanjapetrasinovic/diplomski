@@ -130,5 +130,11 @@ namespace diplomski.Controllers
 
             return View(laptop);
         }
+
+        public ActionResult DeleteLaptop(String name, String LanMacAddress, String WiFiMacAddress)
+        {
+            DataProvider.DeleteLaptop(name, LanMacAddress, WiFiMacAddress);
+            return View();
+        }
     }
 }

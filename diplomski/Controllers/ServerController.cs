@@ -131,5 +131,11 @@ namespace diplomski.Controllers
 
             return View(server);
         }
+
+        public ActionResult DeleteServer(String name, String LanMacAddress)
+        {
+            DataProvider.DeleteServer(name, LanMacAddress);
+            return View();
+        }
     }
 }

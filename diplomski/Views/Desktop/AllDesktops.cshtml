@@ -37,7 +37,7 @@
         <td>
             @Html.ActionLink("Edit", "Edit", new { name = item.name, LanMacAddress = item.LanMacAddress  }) |
             @Html.ActionLink("Details", "Details", new { name = item.name, LanMacAddress = item.LanMacAddress }) |
-            @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+            @Html.ActionLink("Delete", "DeleteDesktop", new { name = item.name, LanMacAddress = item.LanMacAddress })
         </td>
     </tr>
 }
