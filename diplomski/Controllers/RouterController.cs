@@ -75,22 +75,41 @@ namespace diplomski.Controllers
             return View();
         }
 
-        public ActionResult Details(String name, String SerialNumber)
+        
+        public ActionResult Details(String name, String SerialNumber,int depth)
         {
             Router router = DataProvider.RouterByName(name,SerialNumber);
-            List<ODocument> resultset=DataProvider.FindRouterConnections(name, SerialNumber);
+            return View(router);
+        }
+
+        public ActionResult DeleteRouter(String name, String SerialNumber)
+        {
+            DataProvider.DeleteRouter(name, SerialNumber);
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult RouterConnections(FormCollection form)
+        {
+            String name = form["name"].ToString();
+            String SerialNumber = form["SerialNumber"].ToString();
+            String depthString = form["NodeDepth"].ToString();
+            int depth = Convert.ToInt32(depthString);
+
+            Router router = DataProvider.RouterByName(name, SerialNumber);
+            List<ODocument> resultset = DataProvider.FindRouterConnections(name, SerialNumber, depth*2);
             List<Desktop> desktops = new List<Desktop>();
             List<Laptop> laptops = new List<Laptop>();
             List<Server> servers = new List<Server>();
             List<Router> routers = new List<Router>();
-            List<Switch> switches=new List<Switch>();
+            List<Switch> switches = new List<Switch>();
             List<LanCable> lancables = new List<LanCable>();
 
             JavaScriptSerializer converter = new JavaScriptSerializer();
 
-            if (resultset!=null)
+            if (resultset != null)
             {
-                foreach(ODocument doc in resultset)
+                foreach (ODocument doc in resultset)
                 {
                     String className = doc.GetField<String>("@OClassName");
                     switch (className)
@@ -142,12 +161,6 @@ namespace diplomski.Controllers
             @ViewBag.routers = routers;
             @ViewBag.switches = switches;
             @ViewBag.lancables = lancables;
-            return View(router);
-        }
-
-        public ActionResult DeleteRouter(String name, String SerialNumber)
-        {
-            DataProvider.DeleteRouter(name, SerialNumber);
             return View();
         }
     }

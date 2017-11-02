@@ -254,6 +254,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\MyScripts\Connect.js" />
+    <Content Include="Scripts\MyScripts\GraphDetails.js" />
     <Content Include="Scripts\MyScripts\sigma.min.js" />
     <Content Include="Scripts\MyScripts\sigma.parsers.json.min.js" />
     <Content Include="Scripts\respond.js" />
@@ -404,6 +405,7 @@
     <Content Include="Scripts\Sigma\plugins\sigma.renderers.edgeLabels\README.md" />
     <Content Include="Scripts\Sigma\plugins\sigma.renderers.parallelEdges\README.md" />
     <Content Include="Scripts\Sigma\plugins\sigma.renderers.snapshot\README.md" />
+    <Content Include="Views\Router\RouterConnections.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
