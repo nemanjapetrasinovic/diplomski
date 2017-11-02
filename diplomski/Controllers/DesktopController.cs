@@ -30,8 +30,14 @@ namespace diplomski.Controllers
             String name = form["name"].ToString();
             String OS = form["OS"].ToString();
             String LanMacAddress = form["LanMacAddress"].ToString();
+            String Model = form["Model"].ToString();
+            String Owner = form["Owner"].ToString();
+            String PhoneNumber = form["PhoneNumber"].ToString();
+            String Email = form["Email"].ToString();
+            String Comment = form["Comment"].ToString();
+            String Configuration = form["Configuration"].ToString();
 
-            DataProvider.AddDesktop(name, OS, LanMacAddress);
+            DataProvider.AddDesktop(name, OS, LanMacAddress,Model,Owner,PhoneNumber,Email,Comment,Configuration);
             return View();
         }
 
@@ -51,15 +57,39 @@ namespace diplomski.Controllers
             String DesktopNameOld = form["DesktopNameOld"].ToString();
             String DesktopMacAddressOld = form["DesktopMacAddressOld"].ToString();
 
-            DataProvider.UpdateDesktop(name, OS, LanMacAddress, DesktopNameOld, DesktopMacAddressOld);
+            String Model = form["Model"].ToString();
+            String Owner = form["Owner"].ToString();
+            String PhoneNumber = form["PhoneNumber"].ToString();
+            String Email = form["Email"].ToString();
+            String Comment = form["Comment"].ToString();
+            String Configuration = form["Configuration"].ToString();
+
+            DataProvider.UpdateDesktop(name, OS, LanMacAddress, DesktopNameOld, DesktopMacAddressOld,Model,Owner,PhoneNumber,
+                Email,Comment,Configuration);
             return View();
         }
 
         public ActionResult Details(String name, String LanMacAddress)
         {
             Desktop desktop = DataProvider.DesktopByName(name, LanMacAddress);
+            return View(desktop);
+        }
 
-            List<ODocument> resultset = DataProvider.FindDesktopConnections(name, LanMacAddress);
+        public ActionResult DeleteDesktop(String name, String LanMacAddress)
+        {
+            DataProvider.DeleteDesktop(name, LanMacAddress);
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult DesktopConnections(FormCollection form)
+        {
+            String name = form["name"].ToString();
+            String LanMacAddress = form["LanMacAddress"].ToString();
+            String depthString = form["NodeDepth"].ToString();
+            int depth = Convert.ToInt32(depthString);
+
+            List<ODocument> resultset = DataProvider.FindDesktopConnections(name, LanMacAddress,depth*2);
             List<Desktop> desktops = new List<Desktop>();
             List<Laptop> laptops = new List<Laptop>();
             List<Server> servers = new List<Server>();
@@ -123,12 +153,6 @@ namespace diplomski.Controllers
             @ViewBag.routers = routers;
             @ViewBag.switches = switches;
             @ViewBag.lancables = lancables;
-            return View(desktop);
-        }
-
-        public ActionResult DeleteDesktop(String name, String LanMacAddress)
-        {
-            DataProvider.DeleteDesktop(name, LanMacAddress);
             return View();
         }
     }

@@ -30,9 +30,14 @@ namespace diplomski.Controllers
             String OS = form["OS"].ToString();
             String LanMacAddress = form["LanMacAddress"].ToString();
             String WiFiMacAddress = form["WiFiMacAddress"].ToString();
-            String WiFiNetworkName = form["WiFiNetworkName"].ToString();
+            String Model = form["Model"].ToString();
+            String Owner = form["Owner"].ToString();
+            String PhoneNumber = form["PhoneNumber"].ToString();
+            String Email = form["Email"].ToString();
+            String Comment = form["Comment"].ToString();
+            String Configuration = form["Configuration"].ToString();
 
-            DataProvider.AddLaptop(name, OS, LanMacAddress,WiFiMacAddress,WiFiNetworkName);
+            DataProvider.AddLaptop(name, OS, LanMacAddress,WiFiMacAddress,Model,Owner,PhoneNumber,Email,Comment,Configuration);
             return View();
         }
 
@@ -50,20 +55,43 @@ namespace diplomski.Controllers
             String OS = form["OS"].ToString();
             String LanMacAddress = form["LanMacAddress"].ToString();
             String WiFiMacAddress = form["WiFiMacAddress"].ToString();
-            String WiFiNetworkName= form["WiFiNetworkName"].ToString();
             String LaptopNameOld = form["LaptopNameOld"].ToString();
             String LaptopLanMacAddressOld = form["LaptopLanMacAddressOld"].ToString();
             String LaptopWiFiMacAddressOld = form["LaptopWiFiMacAddressOld"].ToString();
+            String Model = form["Model"].ToString();
+            String Owner = form["Owner"].ToString();
+            String PhoneNumber = form["PhoneNumber"].ToString();
+            String Email = form["Email"].ToString();
+            String Comment = form["Comment"].ToString();
+            String Configuration = form["Configuration"].ToString();
 
-            DataProvider.UpdateLaptop(name,OS,LanMacAddress,WiFiMacAddress,WiFiNetworkName, LaptopNameOld, LaptopLanMacAddressOld, LaptopWiFiMacAddressOld);
+            DataProvider.UpdateLaptop(name,OS,LanMacAddress,WiFiMacAddress,LaptopNameOld, LaptopLanMacAddressOld, LaptopWiFiMacAddressOld,
+                Model,Owner,PhoneNumber,Email,Comment,Configuration);
             return View();
         }
 
         public ActionResult Details(String name, String LanMacAddress, String WiFiMacAddress)
         {
             Laptop laptop = DataProvider.LaptopByName(name, LanMacAddress, WiFiMacAddress);
+            return View(laptop);
+        }
 
-            List<ODocument> resultset = DataProvider.FindLaptopConnections(name, LanMacAddress, WiFiMacAddress);
+        public ActionResult DeleteLaptop(String name, String LanMacAddress, String WiFiMacAddress)
+        {
+            DataProvider.DeleteLaptop(name, LanMacAddress, WiFiMacAddress);
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult LaptopConnections(FormCollection form)
+        {
+            String name = form["name"].ToString();
+            String LanMacAddress = form["LanMacAddress"].ToString();
+            String WiFiMacAddress = form["WiFiMacAddress"].ToString();
+            String depthString = form["NodeDepth"].ToString();
+            int depth = Convert.ToInt32(depthString);
+
+            List<ODocument> resultset = DataProvider.FindLaptopConnections(name, LanMacAddress, WiFiMacAddress,depth*2);
             List<Desktop> desktops = new List<Desktop>();
             List<Laptop> laptops = new List<Laptop>();
             List<Server> servers = new List<Server>();
@@ -127,13 +155,6 @@ namespace diplomski.Controllers
             @ViewBag.routers = routers;
             @ViewBag.switches = switches;
             @ViewBag.lancables = lancables;
-
-            return View(laptop);
-        }
-
-        public ActionResult DeleteLaptop(String name, String LanMacAddress, String WiFiMacAddress)
-        {
-            DataProvider.DeleteLaptop(name, LanMacAddress, WiFiMacAddress);
             return View();
         }
     }

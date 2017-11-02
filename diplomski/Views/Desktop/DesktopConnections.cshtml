@@ -1,0 +1,336 @@
+﻿<!-- START SIGMA IMPORTS -->
+<script src="~/Scripts/Sigma/src/sigma.core.js"></script>
+<script src="~/Scripts/Sigma/src/conrad.js"></script>
+<script src="~/Scripts/Sigma/src/utils/sigma.utils.js"></script>
+<script src="~/Scripts/Sigma/src/utils/sigma.polyfills.js"></script>
+<script src="~/Scripts/Sigma/src/sigma.settings.js"></script>
+<script src="~/Scripts/Sigma/src/classes/sigma.classes.dispatcher.js"></script>
+<script src="~/Scripts/Sigma/src/classes/sigma.classes.configurable.js"></script>
+<script src="~/Scripts/Sigma/src/classes/sigma.classes.graph.js"></script>
+<script src="~/Scripts/Sigma/src/classes/sigma.classes.camera.js"></script>
+<script src="~/Scripts/Sigma/src/classes/sigma.classes.quad.js"></script>
+<script src="~/Scripts/Sigma/src/classes/sigma.classes.edgequad.js"></script>
+<script src="~/Scripts/Sigma/src/captors/sigma.captors.mouse.js"></script>
+<script src="~/Scripts/Sigma/src/captors/sigma.captors.touch.js"></script>
+<script src="~/Scripts/Sigma/src/renderers/sigma.renderers.canvas.js"></script>
+<script src="~/Scripts/Sigma/src/renderers/sigma.renderers.webgl.js"></script>
+<script src="~/Scripts/Sigma/src/renderers/sigma.renderers.svg.js"></script>
+<script src="~/Scripts/Sigma/src/renderers/sigma.renderers.def.js"></script>
+<script src="~/Scripts/Sigma/src/renderers/webgl/sigma.webgl.nodes.def.js"></script>
+<script src="~/Scripts/Sigma/src/renderers/webgl/sigma.webgl.nodes.fast.js"></script>
+<script src="~/Scripts/Sigma/src/renderers/webgl/sigma.webgl.edges.def.js"></script>
+<script src="~/Scripts/Sigma/src/renderers/webgl/sigma.webgl.edges.fast.js"></script>
+<script src="~/Scripts/Sigma/src/renderers/webgl/sigma.webgl.edges.arrow.js"></script>
+<script src="~/Scripts/Sigma/src/renderers/canvas/sigma.canvas.labels.def.js"></script>
+<script src="~/Scripts/Sigma/src/renderers/canvas/sigma.canvas.hovers.def.js"></script>
+<script src="~/Scripts/Sigma/src/renderers/canvas/sigma.canvas.nodes.def.js"></script>
+<script src="~/Scripts/Sigma/src/renderers/canvas/sigma.canvas.edges.def.js"></script>
+<script src="~/Scripts/Sigma/src/renderers/canvas/sigma.canvas.edges.curve.js"></script>
+<script src="~/Scripts/Sigma/src/renderers/canvas/sigma.canvas.edges.arrow.js"></script>
+<script src="~/Scripts/Sigma/src/renderers/canvas/sigma.canvas.edges.curvedArrow.js"></script>
+<script src="~/Scripts/Sigma/src/renderers/canvas/sigma.canvas.edgehovers.def.js"></script>
+<script src="~/Scripts/Sigma/src/renderers/canvas/sigma.canvas.edgehovers.curve.js"></script>
+<script src="~/Scripts/Sigma/src/renderers/canvas/sigma.canvas.edgehovers.arrow.js"></script>
+<script src="~/Scripts/Sigma/src/renderers/canvas/sigma.canvas.edgehovers.curvedArrow.js"></script>
+<script src="~/Scripts/Sigma/src/renderers/canvas/sigma.canvas.extremities.def.js"></script>
+<script src="~/Scripts/Sigma/src/renderers/svg/sigma.svg.utils.js"></script>
+<script src="~/Scripts/Sigma/src/renderers/svg/sigma.svg.nodes.def.js"></script>
+<script src="~/Scripts/Sigma/src/renderers/svg/sigma.svg.edges.def.js"></script>
+<script src="~/Scripts/Sigma/src/renderers/svg/sigma.svg.edges.curve.js"></script>
+<script src="~/Scripts/Sigma/src/renderers/svg/sigma.svg.labels.def.js"></script>
+<script src="~/Scripts/Sigma/src/renderers/svg/sigma.svg.hovers.def.js"></script>
+<script src="~/Scripts/Sigma/src/middlewares/sigma.middlewares.rescale.js"></script>
+<script src="~/Scripts/Sigma/src/middlewares/sigma.middlewares.copy.js"></script>
+<script src="~/Scripts/Sigma/src/misc/sigma.misc.animation.js"></script>
+<script src="~/Scripts/Sigma/src/misc/sigma.misc.bindEvents.js"></script>
+<script src="~/Scripts/Sigma/src/misc/sigma.misc.bindDOMEvents.js"></script>
+<script src="~/Scripts/Sigma/src/misc/sigma.misc.drawHovers.js"></script>
+<!-- END SIGMA IMPORTS -->
+<script src="~/Scripts/Sigma/plugins/sigma.plugins.dragNodes/sigma.plugins.dragNodes.js"></script>
+
+@{
+    ViewBag.Title = "DesktopConnections";
+}
+
+<h2>DesktopConnections</h2>
+
+<div>
+    <div id="container">
+        <style>
+            #graph-container {
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                position: relative;
+                width: 100%;
+                height: 100vh;
+                float: right;
+            }
+
+            #sidebar {
+                bottom: 0;
+                right: 0;
+                width: 200px;
+                height: 150px;
+                position: absolute;
+                background-color: #999;
+                padding: 10px;
+            }
+        </style>
+        <div id="graph-container"></div>
+        <!--<div id="sidebar">This area is not a drop target.</div>-->
+    </div>
+</div>
+
+<script>
+    var i,
+        s,
+        N = 25,
+        E = 50,
+        g = {
+            nodes: [],
+            edges: []
+        };
+
+    var desktops = @Html.Raw(Json.Encode(ViewBag.desktops));
+    var desktopArray = new Array();
+    var desktopjsons = [];
+
+    if (desktops != null) {
+        for (var i = desktops.length; i--;) desktopjsons[i] = JSON.stringify(desktops[i]);
+
+        for (i = 0; i < desktops.length; i++) {
+            var d = JSON.parse(desktopjsons[i]);
+            g.nodes.push({
+                id: d["LanMacAddress"],
+                label: d["name"],
+                x: Math.random(),
+                y: Math.random(),
+                size: 40,
+                color: '#2ecc71'
+            });
+        }
+    }
+    var laptops = @Html.Raw(Json.Encode(ViewBag.laptops));
+    var laptopArray = new Array();
+    var laptopjsons = [];
+    if (laptops != null) {
+        for (var i = laptops.length; i--;) laptopjsons[i] = JSON.stringify(laptops[i]);
+
+        for (i = 0; i < laptops.length; i++) {
+            var d = JSON.parse(laptopjsons[i]);
+            g.nodes.push({
+                id: d["LanMacAddress"] + ' ' + d["WiFiMacAddress"],
+                label: d["name"],
+                x: Math.random(),
+                y: Math.random(),
+                size: 40,
+                color: '#2980b9'
+            });
+        }
+    }
+
+    var servers = @Html.Raw(Json.Encode(ViewBag.servers));
+    var serverArray = new Array();
+    var serverjsons = [];
+    if (servers != null) {
+        for (var i = servers.length; i--;) serverjsons[i] = JSON.stringify(servers[i]);
+
+        for (i = 0; i < servers.length; i++) {
+            var d = JSON.parse(serverjsons[i]);
+            g.nodes.push({
+                id: d["LanMacAddress"],
+                label: d["name"],
+                x: Math.random(),
+                y: Math.random(),
+                size: 40,
+                color: '#c0392b'
+            });
+        }
+    }
+
+    var routers = @Html.Raw(Json.Encode(ViewBag.routers));
+    var routerArray = new Array();
+    var routerjsons = [];
+    if (routers != null) {
+        for (var i = routers.length; i--;) routerjsons[i] = JSON.stringify(routers[i]);
+
+        for (i = 0; i < routers.length; i++) {
+            var d = JSON.parse(routerjsons[i]);
+            g.nodes.push({
+                id: d["name"] + ' ' + d["SerialNumber"],
+                label: d["name"],
+                x: Math.random(),
+                y: Math.random(),
+                size: 40,
+                color: '#f1c40f'
+            });
+        }
+    }
+
+    var switches = @Html.Raw(Json.Encode(ViewBag.switches));
+    var switchArray = new Array();
+    var switchjsons = [];
+    if (switches != null) {
+        for (var i = switches.length; i--;) switchjsons[i] = JSON.stringify(switches[i]);
+
+        for (i = 0; i < switches.length; i++) {
+            var d = JSON.parse(switchjsons[i]);
+            g.nodes.push({
+                id: d["name"] + ' ' + d["SerialNumber"],
+                label: d["name"],
+                x: Math.random(),
+                y: Math.random(),
+                size: 40,
+                color: '#2c3e50'
+            });
+        }
+    }
+
+    var lancables = @Html.Raw(Json.Encode(ViewBag.lancables));
+    var lancableArray = new Array();
+    var lancablejsons = [];
+
+    if (lancables != null) {
+        for (var i = lancables.length; i--;) lancablejsons[i] = JSON.stringify(lancables[i]);
+    }
+
+    var id1, id2;
+
+    for (i = 0; i < lancables.length; i++) {
+        var lancable = lancables[i];
+
+        //search in desktops
+        if (desktops!=null)
+        for (var j = 0; j < desktops.length; j++) {
+            var desktop = desktops[j];
+            if (lancable["End1"] == desktop["LanMacAddress"]) {
+                id1 = desktop["LanMacAddress"];
+            }
+        }
+
+        if (desktops != null)
+        for (var j = 0; j < desktops.length; j++) {
+            var desktop = desktops[j];
+            if (lancable["End2"] == desktop["LanMacAddress"]) {
+                id2 = desktop["LanMacAddress"];
+            }
+        }
+
+        //search in laptops
+        if (laptops != null)
+        for (var j = 0; j < laptops.length; j++) {
+            var laptop = laptops[j];
+            if (lancable["End1"] == laptop["LanMacAddress"]) {
+                id1 = laptop["LanMacAddress"] + ' ' + laptop["WiFiMacAddress"];
+            }
+        }
+
+        if (laptops != null)
+        for (var j = 0; j < laptops.length; j++) {
+            var laptop = laptops[j];
+            if (lancable["End2"] == laptop["LanMacAddress"]) {
+                id2 = laptop["LanMacAddress"] + ' ' + laptop["WiFiMacAddress"];
+            }
+        }
+
+        //search in servers
+        if (servers != null)
+        for (var j = 0; j < servers.length; j++) {
+            var server = servers[j];
+            if (lancable["End1"] == server["LanMacAddress"]) {
+                id1 = server["LanMacAddress"];
+            }
+        }
+
+        if (servers != null)
+        for (var j = 0; j < servers.length; j++) {
+            var server = servers[j];
+            if (lancable["End2"] == server["LanMacAddress"]) {
+                id2 = server["LanMacAddress"];
+            }
+        }
+
+        //search in routers
+        if (routers != null)
+        for (var j = 0; j < routers.length; j++) {
+            var router = routers[j];
+            var rmal = router["MacAddressList"];
+            for (var k = 0; k < rmal.length; k++) {
+                if (lancable["End1"] == rmal[k]) {
+                    id1 = router["name"] + ' ' + router["SerialNumber"];
+                }
+            }
+
+        }
+
+        if (routers != null)
+        for (var j = 0; j < routers.length; j++) {
+            var router = routers[j];
+            var rmal = router["MacAddressList"];
+            for (var k = 0; k < rmal.length; k++) {
+                if (lancable["End2"] == rmal[k]) {
+                    id2 = router["name"] + ' ' + router["SerialNumber"];
+                }
+            }
+
+        }
+
+        //search in switches
+        if (switches != null)
+        for (var j = 0; j < switches.length; j++) {
+            var s = switches[j];
+            var smal = s["MacAddressList"];
+            for (var k = 0; k < smal.length; k++) {
+                if (lancable["End1"] == smal[k]) {
+                    id1 = s["name"] + ' ' + s["SerialNumber"];
+                }
+            }
+
+        }
+
+        if (switches != null)
+        for (var j = 0; j < switches.length; j++) {
+            var s = switches[j];
+            var smal = s["MacAddressList"];
+            for (var k = 0; k < smal.length; k++) {
+                if (lancable["End2"] == smal[k]) {
+                    id2 = s["name"] + ' ' + s["SerialNumber"];
+                }
+            }
+
+        }
+
+        g.edges.push({
+            id: lancable["Manufacturer"] + i,
+            source: id1,
+            target: id2,
+            size: 40,
+            color: '#ccc'
+        });
+    }
+
+    // sigma.renderers.def = sigma.renderers.canvas
+    // Instantiate sigma:
+    s = new sigma({
+        graph: g,
+        container: 'graph-container'
+    });
+
+    // Initialize the dragNodes plugin:
+    var dragListener = sigma.plugins.dragNodes(s, s.renderers[0]);
+
+    dragListener.bind('startdrag', function (event) {
+        console.log(event);
+    });
+    dragListener.bind('drag', function (event) {
+        console.log(event);
+    });
+    dragListener.bind('drop', function (event) {
+        console.log(event);
+    });
+    dragListener.bind('dragend', function (event) {
+        console.log(event);
+    });
+</script>

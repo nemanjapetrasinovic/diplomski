@@ -24,7 +24,7 @@
             @Html.DisplayNameFor(model => model.WifiMacAddress)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.WiFiNetworkName)
+            @Html.DisplayNameFor(model => model.Model)
         </th>
         <th></th>
     </tr>
@@ -44,7 +44,7 @@
             @Html.DisplayFor(modelItem => item.WifiMacAddress)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.WiFiNetworkName)
+            @Html.DisplayFor(modelItem => item.Model)
         </td>
         <td>
             @Html.ActionLink("Edit", "Edit", new { name = item.name, LanMacAddress = item.LanMacAddress, WiFiMacAddress=item.WifiMacAddress }) |
