@@ -409,6 +409,7 @@
     <Content Include="Views\Desktop\DesktopConnections.cshtml" />
     <Content Include="Views\Laptop\LaptopConnections.cshtml" />
     <Content Include="Views\Server\ServerConnections.cshtml" />
+    <Content Include="Views\Switch\SwitchConnections.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

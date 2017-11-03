@@ -76,7 +76,7 @@ namespace diplomski.Controllers
         }
 
         
-        public ActionResult Details(String name, String SerialNumber,int depth)
+        public ActionResult Details(String name, String SerialNumber)
         {
             Router router = DataProvider.RouterByName(name,SerialNumber);
             return View(router);

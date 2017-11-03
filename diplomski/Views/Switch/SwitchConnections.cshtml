@@ -48,13 +48,13 @@
 <!-- END SIGMA IMPORTS -->
 <script src="~/Scripts/Sigma/plugins/sigma.plugins.dragNodes/sigma.plugins.dragNodes.js"></script>
 
-
-
 @{
-    ViewBag.Title = "Network";
+    ViewBag.Title = "SwitchConnections";
 }
-<h2>Network</h2>
-<div class="container-fluid" style="width:100%;height:100vh;">
+
+<h2>Switch Connections</h2>
+
+<div>
     <div id="container">
         <style>
             #graph-container {
@@ -62,7 +62,10 @@
                 bottom: 0;
                 left: 0;
                 right: 0;
-                position: absolute;
+                position: relative;
+                width: 100%;
+                height: 100vh;
+                float: right;
             }
 
             #sidebar {
@@ -79,6 +82,7 @@
         <!--<div id="sidebar">This area is not a drop target.</div>-->
     </div>
 </div>
+
 <script>
     var i,
         s,
@@ -98,20 +102,13 @@
 
         for (i = 0; i < desktops.length; i++) {
             var d = JSON.parse(desktopjsons[i]);
-            var o = {
-                name: d["name"],
-                LanMacAddress: d["LanMacAddress"],
-                type:"Desktop"
-            }
-            var s = JSON.stringify(o);
             g.nodes.push({
                 id: d["LanMacAddress"],
-                desc: s,
+                label: d["name"],
                 x: Math.random(),
                 y: Math.random(),
                 size: 40,
-                color: '#2ecc71',
-                label: "Name: " + d["name"] + ", Lan Mac Address: " + d["LanMacAddress"]
+                color: '#2ecc71'
             });
         }
     }
@@ -123,22 +120,13 @@
 
         for (i = 0; i < laptops.length; i++) {
             var d = JSON.parse(laptopjsons[i]);
-            var o1 = {
-                name: d["name"],
-                LanMacAddress: d["LanMacAddress"],
-                WifiMacAddress: d["WifiMacAddress"],
-                type: "Laptop"
-            }
-            var s1 = JSON.stringify(o1);
-
             g.nodes.push({
                 id: d["LanMacAddress"] + ' ' + d["WiFiMacAddress"],
-                desc: s1,
+                label: d["name"],
                 x: Math.random(),
                 y: Math.random(),
                 size: 40,
-                color: '#2980b9',
-                label: "Name: " + d["name"] + ", Lan Mac Address: " + d["LanMacAddress"] + ", Wifi Mac Address: " + d["WifiMacAddress"]
+                color: '#2980b9'
             });
         }
     }
@@ -151,21 +139,13 @@
 
         for (i = 0; i < servers.length; i++) {
             var d = JSON.parse(serverjsons[i]);
-            var o2 = {
-                name: d["name"],
-                LanMacAddress: d["LanMacAddress"],
-                type: "Server"
-            }
-            var s2 = JSON.stringify(o2);
-
             g.nodes.push({
                 id: d["LanMacAddress"],
-                desc: s2,
+                label: d["name"],
                 x: Math.random(),
                 y: Math.random(),
                 size: 40,
-                color: '#c0392b',
-                label: "Name: " + d["name"] + ", Lan Mac Address: " + d["LanMacAddress"]
+                color: '#c0392b'
             });
         }
     }
@@ -178,20 +158,13 @@
 
         for (i = 0; i < routers.length; i++) {
             var d = JSON.parse(routerjsons[i]);
-            var o3 = {
-                name: d["name"],
-                SerialNumber: d["SerialNumber"],
-                type: "Router"
-            }
-            var s3 = JSON.stringify(o3);
             g.nodes.push({
                 id: d["name"] + ' ' + d["SerialNumber"],
                 label: d["name"],
                 x: Math.random(),
                 y: Math.random(),
                 size: 40,
-                color: '#f1c40f',
-                desc:s3
+                color: '#f1c40f'
             });
         }
     }
@@ -204,21 +177,13 @@
 
         for (i = 0; i < switches.length; i++) {
             var d = JSON.parse(switchjsons[i]);
-            var o4 = {
-                name: d["name"],
-                SerialNumber: d["SerialNumber"],
-                type:"Switch"
-            }
-            var s4 = JSON.stringify(o4);
-
             g.nodes.push({
                 id: d["name"] + ' ' + d["SerialNumber"],
                 label: d["name"],
                 x: Math.random(),
                 y: Math.random(),
                 size: 40,
-                color: '#2c3e50',
-                desc: s4
+                color: '#2c3e50'
             });
         }
     }
@@ -367,30 +332,5 @@
     });
     dragListener.bind('dragend', function (event) {
         console.log(event);
-    });
-
-    s.bind("doubleClickNode", function (event) {
-        var nodeDesc = event["data"]["node"].desc;
-
-        var node = JSON.parse(nodeDesc);
-
-        switch (node.type) {
-
-            case "Desktop":
-                window.location.href = "/Desktop/Details" + "?name=" + node.name + "&LanMacAddress=" + node.LanMacAddress;
-                break;
-            case "Laptop":
-                window.location.href = "/Laptop/Details" + "?name=" + node.name + "&LanMacAddress=" + node.LanMacAddress + "&WifiMacAddress=" + node.WifiMacAddress;
-                break;
-            case "Server":
-                window.location.href = "/Server/Details" + "?name=" + node.name + "&LanMacAddress=" + node.LanMacAddress;
-                break;
-            case "Router":
-                window.location.href = "/Router/Details" + "?name=" + node.name + "&SerialNumber=" + node.SerialNumber;
-                break;
-            case "Switch":
-                window.location.href = "/Switch/Details" + "?name=" + node.name + "&SerialNumber=" + node.SerialNumber;
-                break;
-        }
     });
 </script>

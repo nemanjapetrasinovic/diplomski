@@ -74,8 +74,24 @@ namespace diplomski.Controllers
         public ActionResult Details(String name, String SerialNumber)
         {
             Switch s = DataProvider.SwitchByName(name, SerialNumber);
+            return View(s);
+        }
 
-            List<ODocument> resultset = DataProvider.FindSwitchConnections(name, SerialNumber);
+        public ActionResult DeleteSwitch(String name, String SerialNumber)
+        {
+            DataProvider.DeleteSwitch(name, SerialNumber);
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult SwitchConnections(FormCollection form)
+        {
+            String name = form["name"].ToString();
+            String SerialNumber = form["SerialNumber"].ToString();
+            String depthString = form["NodeDepth"].ToString();
+            int depth = Convert.ToInt32(depthString);
+
+            List<ODocument> resultset = DataProvider.FindSwitchConnections(name, SerialNumber,depth*2);
             List<Desktop> desktops = new List<Desktop>();
             List<Laptop> laptops = new List<Laptop>();
             List<Server> servers = new List<Server>();
@@ -139,13 +155,6 @@ namespace diplomski.Controllers
             @ViewBag.routers = routers;
             @ViewBag.switches = switches;
             @ViewBag.lancables = lancables;
-
-            return View(s);
-        }
-
-        public ActionResult DeleteSwitch(String name, String SerialNumber)
-        {
-            DataProvider.DeleteSwitch(name, SerialNumber);
             return View();
         }
     }
