@@ -8,8 +8,9 @@ namespace diplomski.Models
 {
     public class Server:Computer
     {
-        public String LanMacAddress { get; set; }
         public String Type { get; set; }
         public String Description { get; set; }
+        public String InstalledPrograms { get; set; }
+        public String FreePorts { get; set; }
     }
 }

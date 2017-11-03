@@ -32,8 +32,18 @@ namespace diplomski.Controllers
             String LanMacAddress = form["LanMacAddress"].ToString();
             String Type = form["Type"].ToString();
             String Description = form["Description"].ToString();
+            String Model = form["Model"].ToString();
+            String Owner = form["Owner"].ToString();
+            String PhoneNumber = form["PhoneNumber"].ToString();
+            String Email = form["Email"].ToString();
+            String Comment = form["Comment"].ToString();
+            String Configuration = form["Configuration"].ToString();
+            String InstalledPrograms = form["InstalledPrograms"].ToString();
+            String FreePorts = form["FreePorts"].ToString();
 
-            DataProvider.AddServer(name, OS, LanMacAddress, Type, Description);
+
+            DataProvider.AddServer(name, OS, LanMacAddress, Type, Description,Model,Owner,PhoneNumber,Email,Comment,
+                Configuration,InstalledPrograms,FreePorts);
             return View();
         }
 
@@ -54,17 +64,40 @@ namespace diplomski.Controllers
             String Description = form["Description"].ToString();
             String ServerNameOld = form["ServerNameOld"].ToString();
             String ServerLanMacAddressOld = form["ServerLanMacAddressOld"].ToString();
+            String Model = form["Model"].ToString();
+            String Owner = form["Owner"].ToString();
+            String PhoneNumber = form["PhoneNumber"].ToString();
+            String Email = form["Email"].ToString();
+            String Comment = form["Comment"].ToString();
+            String Configuration = form["Configuration"].ToString();
+            String InstalledPrograms = form["InstalledPrograms"].ToString();
+            String FreePorts = form["FreePorts"].ToString();
 
-            DataProvider.UpdateServer(name, OS, LanMacAddress, Type, Description, ServerNameOld, ServerLanMacAddressOld);
+            DataProvider.UpdateServer(name, OS, LanMacAddress, Type, Description, ServerNameOld, ServerLanMacAddressOld,Model,
+                Owner,PhoneNumber,Email,Comment,Configuration,InstalledPrograms,FreePorts);
             return View();
         }
 
         public ActionResult Details(String name, String LanMacAddress)
         {
             Server server = DataProvider.ServerByName(name, LanMacAddress);
+            return View(server);
+        }
 
+        public ActionResult DeleteServer(String name, String LanMacAddress)
+        {
+            DataProvider.DeleteServer(name, LanMacAddress);
+            return View();
+        }
 
-            List<ODocument> resultset = DataProvider.FindServerConnections(name, LanMacAddress);
+        public ActionResult ServerConnections(FormCollection form)
+        {
+            String name = form["name"].ToString();
+            String LanMacAddress = form["LanMacAddress"].ToString();
+            String depthString = form["NodeDepth"].ToString();
+            int depth = Convert.ToInt32(depthString);
+
+            List<ODocument> resultset = DataProvider.FindServerConnections(name, LanMacAddress,depth*2);
             List<Desktop> desktops = new List<Desktop>();
             List<Laptop> laptops = new List<Laptop>();
             List<Server> servers = new List<Server>();
@@ -129,12 +162,6 @@ namespace diplomski.Controllers
             @ViewBag.switches = switches;
             @ViewBag.lancables = lancables;
 
-            return View(server);
-        }
-
-        public ActionResult DeleteServer(String name, String LanMacAddress)
-        {
-            DataProvider.DeleteServer(name, LanMacAddress);
             return View();
         }
     }
